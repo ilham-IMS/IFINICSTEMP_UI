@@ -1,0 +1,107 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="8">
+    <RadzenRow Gap="32">
+      <FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())"
+        Color="@(Color.Secondary)" />
+    </RadzenRow>
+
+    <Divider />
+
+    <RadzenStack Gap="16">
+      @if (!IsReadOnly)
+      {
+        <!-- #region Toolbar -->
+        <RadzenRow Gap="8">
+          <RoleAccess Code="RC0004882">
+          <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+          </RoleAccess>
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+          <Locker />
+        </RadzenRow>
+        <!-- #endregion -->
+      }
+
+      <RadzenStack Gap="8">
+        <RadzenRow Gap="32">
+          <!-- #region Column -->
+          <FormFieldTextBox Label="Formula" Name="Formula" Value="@(row["Formula"]?.GetValue<string>())"
+            Disabled=@IsReadOnly />
+          <!-- #endregion -->
+
+          <!-- #region Table -->
+          <FormFieldDropdown Label="Component Type" TValue="string" Name="ComponentName" Items="@componentType"
+            Value="@(row["ComponentName"]?.GetValue<string>())" Disabled=@IsReadOnly
+            ValueChanged="@(value => ChangeComponentType(value))" />
+          <!-- #endregion -->
+
+          <!-- #region Operator -->
+          <FormFieldDropdown Label="Operator" TValue="string" Name="Operator" Items="@operatorDict"
+            Value="@(row["Operator"]?.GetValue<string>())" Disabled=@IsReadOnly />
+          <!-- #endregion -->
+
+          <!-- #region Name -->
+          @* <FormFieldTextBox Name="Name" Label="Name" Value="@(row["Name"]?.GetValue<string>())" Required
+          Disabled=@IsReadOnly/> *@
+          <!-- #endregion -->
+        </RadzenRow>
+        <RadzenRow Gap="32">
+          <!-- #region Label -->
+          <FormFieldTextBox Name="Label" Label="Label" Value="@(row["Label"]?.GetValue<string>())" Required
+            Disabled=@IsReadOnly />
+          <!-- #endregion -->
+
+          <!-- #region IsDefaultValue -->
+          <FormFieldSwitch Label="Default" Name="IsDefaultValue" Value="@(row["IsDefaultValue"]?.GetValue<int>())"
+            Disabled=@IsReadOnly ValueChanged="@(value => ChangeIsDefaultValue(value))" />
+          <!-- #endregion -->
+
+          <!-- #region DefaultValue -->
+          @if (row["ComponentName"]?.GetValue<string>() == "FormFieldTextBox")
+          {
+            <FormFieldTextBox Name="DefaultValue" Label="Default Value" Value="@(row["DefaultValue"]?.GetValue<string>())"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@(v => row["DefaultValue"] = v?.ToString())" />
+          }
+          else if (row["ComponentName"]?.GetValue<string>() == "FormFieldNumeric")
+          {
+            <FormFieldNumeric Name="DefaultValue" Label="Default Value"
+              Value="@(decimal.TryParse(row["DefaultValue"]?.ToString(), out var num) ? num : (decimal?)null)"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@((decimal? v) => row["DefaultValue"] = v?.ToString())" />
+          }
+          else if (row["ComponentName"]?.GetValue<string>() == "FormFieldDatePicker")
+          {
+            <FormFieldDatePicker Name="DefaultValue" Label="Default Value"
+              Value="@(DateTime.TryParse(row["DefaultValue"]?.GetValue<string>(), out var dt) ? dt : (DateTime?)null)"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@(v => row["DefaultValue"] = v?.ToString("yyyy-MM-dd"))" />
+          }
+          else if (row["ComponentName"]?.GetValue<string>() == "FormFieldSwitch")
+          {
+            int defaultValue = 0;
+            var valStr = row["DefaultValue"]?.GetValue<string>();
+            if (!string.IsNullOrWhiteSpace(valStr) && int.TryParse(valStr, out var parsed))
+            {
+              defaultValue = parsed;
+            }
+            else
+            {
+              defaultValue = -1; // fallback (or 0, depending on your logic)
+            }
+
+            <FormFieldSwitch Name="DefaultValue" Label="Default Value" Value="defaultValue"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@((int? v) => row["DefaultValue"] = v?.ToString())" />
+          }
+          <!-- #endregion -->
+        </RadzenRow>
+      </RadzenStack>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

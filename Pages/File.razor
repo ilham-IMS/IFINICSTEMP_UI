@@ -1,0 +1,70 @@
+@page "/file"
+
+
+<RadzenCard>
+	@* <h4 class="mb-4">Employee: <b>@(firstEmployee.FirstName + " " + firstEmployee.LastName)</b></h4> *@
+	<RadzenFileInput Value=@photo @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
+		Change=@(args => OnChange(args, "FileInput")) Error=@(args => OnError(args, "FileInput")) Accept="pdf"
+		InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+</RadzenCard>
+
+<RadzenCard>
+	<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Upload client-side without Url</RadzenText>
+	<RadzenUpload Url="upload" Progress=@(args => OnProgress(args, "Single file upload")) class="w-100"
+		InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})">
+	</RadzenUpload>
+</RadzenCard>
+
+<RadzenUpload Multiple="true" class="w-100"
+	InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select file" }})" />
+
+<InputFile OnChange="@HandleFileUpload" />
+@photo
+@code {
+	string? photo;
+	string? fileName;
+	long? fileSize;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await base.OnParametersSetAsync();
+
+	}
+
+	void OnChange(string value, string name)
+	{
+		@* console.Log($"{name} value changed"); *@
+	}
+
+	void OnError(UploadErrorEventArgs args, string name)
+	{
+		@* console.Log($"{args.Message}"); *@
+	}
+
+	void OnProgress(UploadProgressArgs args, string name)
+	{
+		Console.WriteLine($"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.");
+
+		if (args.Progress == 100)
+		{
+			foreach (var file in args.Files)
+			{
+				Console.WriteLine($"Uploaded: {file.Name} / {file.Size} bytes");
+			}
+		}
+	}
+
+	private async Task HandleFileUpload(InputFileChangeEventArgs e)
+	{
+		var file = e.File; // Ini adalah IFormFile Anda
+		if (file != null)
+		{
+			Console.WriteLine(file.Name);
+			// Anda dapat melakukan sesuatu dengan file di sini
+			// Misalnya, membaca data file atau mengirimnya ke API menggunakan JSInterop
+		}
+
+		await Task.CompletedTask;
+	}
+
+}

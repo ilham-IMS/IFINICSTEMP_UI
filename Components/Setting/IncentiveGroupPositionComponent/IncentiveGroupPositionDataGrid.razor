@@ -1,0 +1,63 @@
+<TemplateForm Submit="@Save">
+  <RadzenStack Gap="16">
+    <!-- #region List Data -->
+    <DataGrid ID="IncentiveGroupPositionDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected>
+      <Buttons>
+        <!-- #region Toolbar -->
+        <RadzenRow Gap="8">
+          <RoleAccess Code="RC0004893">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click=@Add Icon="add" />
+          </RoleAccess>
+
+          <RoleAccess Code="RC0004894">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Save" ButtonType="ButtonType.Submit" Icon="save" />
+          </RoleAccess>
+
+          <RoleAccess Code="RD0001266">
+            <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Click=@Delete Icon="delete" />
+          </RoleAccess>
+        </RadzenRow>
+        <!-- #endregion -->
+      </Buttons>
+
+      @* <DataGridColumn TItem="JsonObject" Property="CriteriaName" Title="Criteria" Width="30%" Link=@(row =>
+      $"systemsetting/masterquestiongroup/{QuestionGroupID}/masterquestiongroupcriteria/{row["ItemNo"]?.GetValue<int>()}")
+      /> *@
+      <Columns>
+        <DataGridColumn TItem="JsonObject" Property="PositionID" Title="Position" Width="60%">
+          <Template Context="row">
+            <!-- #region Position -->
+            <FormFieldButtonLookup Target="PositionLookup" Name=@($"PositionID_{row["ID"]?.GetValue<string>()}")
+              Value=@(row["PositionID"]?.GetValue<string>()) Text=@(row["PositionDescription"]?.GetValue<string>()) Click=@(() =>
+              activeItemID = row["ID"]?.GetValue<string>() ?? "-") Style="text-align:left; width:100%;" 
+              Title="Data Source From : IFINSYS - Company Information - Position"/>
+            <!-- #endregion -->
+          </Template>
+        </DataGridColumn>
+        <DataGridColumn TItem="JsonObject" Type="typeof(Decimal)" Property="PositionRatio" Title="Ratio" Width="40%" Format="N6">
+          <Template Context="row">
+            <!-- #region Ratio -->
+            <FormFieldNumeric Name="@($"PositionRatio_{row["ID"]}")" 
+              Value="@(row["PositionRatio"]?.GetValue<decimal?>())"
+              ValueChanged="@((decimal? value) => { row["PositionRatio"] = value; })" />
+            <!-- #endregion -->
+          </Template>
+        </DataGridColumn>
+      
+      </Columns>
+    </DataGrid>
+    <!-- #endregion -->
+  </RadzenStack>
+</TemplateForm>
+
+<!-- #region Position's lookup -->
+<SingleSelectLookup ID="PositionLookup" @ref=@PositionLookup TItem="JsonObject" LoadData="LoadPositionFromSys"
+	Title="Position List" Select=@( async (select) => { await SelectLookupPosition(select); })>
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Type="typeof(string)" Property="Code" Title="Code" TextAlign="TextAlign.Center" />
+    <DataGridColumn TItem="JsonObject" Type="typeof(string)" Property="Description" Title="Description" />
+  </ColumnsTemplate>
+</SingleSelectLookup>
+<!-- #endregion -->
+
+

@@ -1,0 +1,30 @@
+@page "/{ParentMenuURL}/masterdynamicreport/add"
+@page "/{ParentMenuURL}/masterdynamicreport/{ID}"
+@using IFinancing360_ICS_UI.Components.Setting.MasterDynamicReportTableComponent
+@using IFinancing360_ICS_UI.Components.Setting.MasterDynamicReportColumnComponent
+
+<Title Text="Master Dynamic Report Info" />
+<RoleAccess Code="RA0002359">
+  <PageContainer>
+
+    <PageLock When=@(ID != null)>
+
+
+      <MasterDynamicReportTableForm ID="@ID" ParentMenuURL=@ParentMenuURL />
+
+      @if (ID != null)
+      {
+        <Divider />
+        <SectionTitle Text="Column List" />
+        <MasterDynamicReportColumnDataGrid TableID="@ID" ParentMenuURL=@ParentMenuURL />
+      }
+    </PageLock>
+  </PageContainer>
+</RoleAccess>
+
+
+@code {
+  [Parameter, EditorRequired] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+
+}

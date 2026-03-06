@@ -1,0 +1,25 @@
+<RadzenStack>
+  <DataGrid ID="DynamicFormDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false"
+    RowLink="@(row => $"{ParentMenuURL}/dynamicform/{MasterFormID}/formControl/{row["ID"]?.GetValue<string>()}")">
+    <!-- #region Toolbar -->
+    <Buttons>
+
+      <RadzenRow Gap="8">
+        @* <RoleAccess Code="RA0000598"> *@
+        <Button ButtonStyle="ButtonStyle.Info" Icon="add" Text="Add" Click="@Add" />
+        @* </RoleAccess> *@
+      </RadzenRow>
+    </Buttons>
+    <!-- #endregion -->
+
+    <!-- #region List Data -->
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="Label" Title="Label" Width="80%" TextAlign="TextAlign.Left" />
+      <DataGridColumn TItem="JsonObject" Property="DisplayOrder" Title="Display Order" TextAlign="TextAlign.Right"
+        Width="20%" />
+      <DataGridColumn TItem="JsonObject" Property="IsActive" Title="Active" TextAlign="TextAlign.Center" Width="20%"
+        Format="YN" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>

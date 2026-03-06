@@ -1,0 +1,15 @@
+@page "/{ParentMenuURL}/dynamicreportsetting"
+@using IFinancing360_ICS_UI.Components.Setting.DynamicReportComponent
+
+<Title Text="Dynamic Report List" />
+<RoleAccess Code="RA0002362">
+<ReleaseLock />
+<PageContainer>
+
+  <DynamicReportDataGrid ParentMenuURL=@ParentMenuURL />
+</PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

@@ -1,0 +1,15 @@
+@page "/report/iframe/iframeview"
+
+@using IFinancing360_ICS_UI.Components.IFrameViewComponent
+@using DotNetEnv;
+
+<ReleaseLock />
+<Title Text="Report List" />
+
+<PageContainer>
+  <IFrameView moduleUrl="@moduleUrl"/>
+</PageContainer>
+
+@code { 
+	public string? moduleUrl { get; set; } =  Env.GetString("IFINRPT_UI")  + "iframe/sysreport/ifinsvy";
+}

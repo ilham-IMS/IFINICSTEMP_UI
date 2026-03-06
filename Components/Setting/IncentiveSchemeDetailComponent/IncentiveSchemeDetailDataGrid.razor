@@ -1,0 +1,54 @@
+<TemplateForm Submit="@Save">
+  <RadzenStack Gap="16">
+    <!-- #region List Data -->
+    <DataGrid ID="IncentiveSchemeDetailDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected=true>
+      <Buttons>
+        <!-- #region Toolbar -->
+        <RadzenRow Gap="8">
+          <RoleAccess Code="RC0004889">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@Add" Icon="add" />
+          </RoleAccess>
+          <RoleAccess Code="RD0001265">
+            <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@Delete" Icon="delete" />
+          </RoleAccess>
+          <RoleAccess Code="RC0004892">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Save" ButtonType="ButtonType.Submit" Icon="save" />
+          </RoleAccess>
+
+        </RadzenRow>
+        <!-- #endregion -->
+      </Buttons>
+
+      <Columns>
+        <DataGridColumn TItem=" JsonObject" Type="typeof(decimal)" Property="FromRate" Title="From Rate"
+          Width="30%">
+          <Template Context="row">
+            <FormFieldNumeric Name="@($"FromRate_{row["ID"]}")" Required="true" TValue="decimal?"
+              Value="@(row["FromRate"]?.GetValue<decimal>())" Format="N6" ValueChanged="@(value => { 
+                                  row["FromRate"] = value; 
+                              })"/>
+          </Template>
+        </DataGridColumn>
+        <DataGridColumn TItem=" JsonObject" Type="typeof(decimal)" Property="ToRate" Title="To Rate"
+          Width="30%">
+          <Template Context="row">
+            <FormFieldNumeric Name="@($"ToRate_{row["ID"]}")" Required="true" TValue="decimal?"
+              Value="@(row["ToRate"]?.GetValue<decimal>())" Format="N6" ValueChanged="@(value => { 
+                                  row["ToRate"] = value; 
+                              })"/>
+          </Template>
+        </DataGridColumn>
+        <DataGridColumn TItem=" JsonObject" Type="typeof(decimal)" Property="IncentiveRate" Title="Incentive Rate"
+          Width="40%">
+          <Template Context="row">
+            <FormFieldNumeric Name="@($"IncentiveRate_{row["ID"]}")" Required="true" TValue="decimal?"
+              Value="@(row["IncentiveRate"]?.GetValue<decimal>())" Format="N6" ValueChanged="@(value => { 
+                                  row["IncentiveRate"] = value; 
+                              })"/>
+          </Template>
+        </DataGridColumn>
+      </Columns>
+    </DataGrid>
+    <!-- #endregion -->
+  </RadzenStack>
+</TemplateForm>

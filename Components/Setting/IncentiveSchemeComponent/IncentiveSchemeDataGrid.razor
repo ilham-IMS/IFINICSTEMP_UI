@@ -1,0 +1,24 @@
+<RadzenStack Gap="16">
+  <!-- #region List Data -->
+  <DataGrid ID="IncentiveSchemeDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" RowLink="@(row => $"{ParentMenuURL}/incentivescheme/{row["ID"]}")">
+    <Buttons>
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0004889">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@Add" Icon="add" />
+        </RoleAccess>
+
+      </RadzenRow>
+      <!-- #endregion -->
+    </Buttons>
+
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="IncentiveType" Title="Type" Width="30%" TextAlign="TextAlign.Center" />
+      <DataGridColumn TItem="JsonObject" Property="EffDate" Title="Eff Date" Width="25%" />
+      <DataGridColumn TItem="JsonObject" Property="IncentiveRatio" Title="Ratio" Width="20%" Format="N6"/>
+      <DataGridColumn TItem="JsonObject" Property="IsActive" Title="Active" Width="25%" TextAlign="TextAlign.Center"
+        Format="YN" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>

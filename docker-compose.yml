@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  ifinsys_ui:
+    image: ifinsys_ui:latest
+    container_name: ifinsys_ui
+    environment:
+      - IFINSYS=http://147.139.191.88:81
+    ports:
+      - "9001:9001"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    external: true

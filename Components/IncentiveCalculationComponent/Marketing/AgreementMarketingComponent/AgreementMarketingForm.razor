@@ -1,0 +1,32 @@
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing.AgreementMarketingCommissionComponent
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing.AgreementMarketingFeeComponent
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing.AgreementMarketingReferralComponent
+<!-- #region Form -->
+<TemplateForm >
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      @* <RoleAccess Code="RC0004894">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"
+           />
+      </RoleAccess> *@
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+     
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+    <AgreementMarketingInfoForm ID=@ID IncentiveID=@IncentiveID />
+    <Divider />
+    <AgreementMarketingFeeDataGrid ID=@ID />
+    <Divider />
+    <AgreementMarketingCommissionDataGrid ID=@ID />
+    <Divider />
+    <AgreementMarketingReferralDataGrid ID=@ID />
+    <Divider />
+    <AgreementMarketingRateForm ID=@ID IncentiveID=@IncentiveID />
+    
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

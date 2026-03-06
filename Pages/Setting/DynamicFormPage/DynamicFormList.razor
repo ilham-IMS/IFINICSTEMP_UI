@@ -1,0 +1,23 @@
+@page "/{ParentMenuURL}/dynamicform"
+@using IFinancing360_ICS_UI.Components.Setting.DynamicFormComponent
+
+<ReleaseLock />
+
+<Title Text="Dynamic Field List" />
+
+<RoleAccess Code="RA0002366">
+  <PageContainer>
+    <DynamicFormDataGrid ParentMenuURL=@ParentMenuURL/>
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+  }
+}
+
+@code {
+	[Parameter] public string? ParentMenuURL { get; set; } 
+}

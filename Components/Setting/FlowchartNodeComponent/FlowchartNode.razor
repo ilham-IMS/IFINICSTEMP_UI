@@ -1,0 +1,13 @@
+<RadzenStack Gap="16">
+  <RadzenRow Gap="8">
+    <Button Text="Save" Click="@Update" Icon="save" />
+    <Button Text="Add Node" Click="@Add" Icon="add" />
+  </RadzenRow>
+  <RadzenStack class="diagram-container">
+    <CascadingValue Value="Diagram" IsFixed="true">
+      <DiagramCanvas >
+
+      </DiagramCanvas>
+    </CascadingValue>
+  </RadzenStack>
+</RadzenStack>

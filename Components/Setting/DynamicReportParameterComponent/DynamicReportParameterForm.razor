@@ -1,0 +1,146 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="8">
+    <RadzenRow Gap="32">
+      <FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())"
+        Color="@(Color.Secondary)" />
+    </RadzenRow>
+
+    <Divider />
+
+    <RadzenStack Gap="16">
+      @if (!IsReadOnly)
+      {
+        <!-- #region Toolbar -->
+        <RadzenRow Gap="8">
+          <RoleAccess Code="RC0004881">
+          <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+          </RoleAccess>
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+
+          <MultipleRoleAccess Code=@(new string[] {"RC0004867"})>
+        <RadzenStack Gap="8" Style="margin-left: auto;">
+          <RadzenRow Gap="32">
+            <ButtonDropdown Icon="manufacturing" Text="" RightIcon="true">
+            <Items>
+              <RoleAccess Code="RC0004867">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="dynamic_form" Text="Dynamic Form Setting" 
+                  Click="@GoToSetting"/>
+              </RoleAccess>
+              <RoleAccess Code="RC0004867">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="flowchart"  Text="Dynamic Process Setting"/>
+              </RoleAccess>
+            </Items>
+          </ButtonDropdown>
+          </RadzenRow>
+        </RadzenStack>
+        </MultipleRoleAccess>
+          <Locker />
+        </RadzenRow>
+        <!-- #endregion -->
+      }
+
+      <RadzenStack Gap="8">
+        <RadzenRow Gap="32">
+          <!-- #region Column -->
+          <FormFieldButtonLookup Label="Column" Name="MasterDynamicReportColumnID"
+            Value="@(row["MasterDynamicReportColumnID"]?.GetValue<string>())"
+            Text="@($"{row["TableName"]?.GetValue<string>()} {row["ColumnName"]?.GetValue<string>()}")"
+            Target="@masterColumnLookup" Title="Data Source From : Client Management - Setting - Master Dynamic Report"
+            Required=true Disabled=@IsReadOnly />
+          <!-- #endregion -->
+
+          <!-- #region Table -->
+          <FormFieldDropdown Label="Component Type" TValue="string" Name="ComponentName" Items="@componentType"
+            Value="@(row["ComponentName"]?.GetValue<string>())" Disabled=@IsReadOnly
+            ValueChanged="@(value => ChangeComponentType(value))" />
+          <!-- #endregion -->
+
+          <!-- #region Operator -->
+          <FormFieldDropdown Label="Operator" TValue="string" Name="Operator" Items="@operatorDict"
+            Value="@(row["Operator"]?.GetValue<string>())" Disabled=@IsReadOnly />
+          <!-- #endregion -->
+
+          <!-- #region Name -->
+          @* <FormFieldTextBox Name="Name" Label="Name" Value="@(row["Name"]?.GetValue<string>())" Required
+          Disabled=@IsReadOnly/> *@
+          <!-- #endregion -->
+        </RadzenRow>
+        <RadzenRow Gap="32">
+          <!-- #region Label -->
+          <FormFieldTextBox Name="Label" Label="Label" Value="@(row["Label"]?.GetValue<string>())" Required
+            Disabled=@IsReadOnly />
+          <!-- #endregion -->
+
+          <!-- #region IsDefaultValue -->
+          <FormFieldSwitch Label="Default" Name="IsDefaultValue" Value="@(row["IsDefaultValue"]?.GetValue<int>())"
+            Disabled=@IsReadOnly ValueChanged="@(value => ChangeIsDefaultValue(value))" />
+          <!-- #endregion -->
+
+          <!-- #region DefaultValue -->
+          @if (row["ComponentName"]?.GetValue<string>() == "FormFieldTextBox")
+          {
+            <FormFieldTextBox Name="DefaultValue" Label="Default Value" Value="@(row["DefaultValue"]?.GetValue<string>())"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@(v => row["DefaultValue"] = v?.ToString())" />
+          }
+          else if (row["ComponentName"]?.GetValue<string>() == "FormFieldNumeric")
+          {
+            <FormFieldNumeric Name="DefaultValue" Label="Default Value"
+              Value="@(decimal.TryParse(row["DefaultValue"]?.ToString(), out var num) ? num : (decimal?)null)"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@((decimal? v) => row["DefaultValue"] = v?.ToString())" />
+          }
+          else if (row["ComponentName"]?.GetValue<string>() == "FormFieldDatePicker")
+          {
+            <FormFieldDatePicker Name="DefaultValue" Label="Default Value"
+              Value="@(DateTime.TryParse(row["DefaultValue"]?.GetValue<string>(), out var dt) ? dt : (DateTime?)null)"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@(v => row["DefaultValue"] = v?.ToString("yyyy-MM-dd"))" />
+          }
+          else if (row["ComponentName"]?.GetValue<string>() == "FormFieldSwitch")
+          {
+            int defaultValue = 0;
+            var valStr = row["DefaultValue"]?.GetValue<string>();
+            if (!string.IsNullOrWhiteSpace(valStr) && int.TryParse(valStr, out var parsed))
+            {
+              defaultValue = parsed;
+            }
+            else
+            {
+              defaultValue = -1; // fallback (or 0, depending on your logic)
+            }
+
+            <FormFieldSwitch Name="DefaultValue" Label="Default Value" Value="defaultValue"
+              Required="@(row["IsDefaultValue"]?.GetValue<int>() == 1)" Disabled="@IsReadOnly"
+              Visible="@(row["IsDefaultValue"]?.GetValue<int>() == 1)"
+              ValueChanged="@((int? v) => row["DefaultValue"] = v?.ToString())" />
+          }
+          <!-- #endregion -->
+
+        </RadzenRow>
+      </RadzenStack>
+    </RadzenStack>
+  </RadzenStack>
+  <br>
+  @if (controls?.Count > 0)
+  {
+    <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+    <RadzenStack Gap="8" Style="margin-top: 1rem;">
+      <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+        @Form
+      </RadzenRow>
+    </RadzenStack>
+  }
+</TemplateForm>
+<!-- #endregion -->
+
+<SingleSelectLookup TItem="JsonObject" ID="MasterDynamicReportColumnDataGrid" @ref="masterColumnLookup" Title="Column"
+  LoadData="LoadMasterDynamicReportColumnLookup" Select="@(SelectColumn)">
+  <DataGridColumn TItem="JsonObject" Property="TableName" Title="Table" />
+  <DataGridColumn TItem="JsonObject" Property="Alias" Title="Column" />
+</SingleSelectLookup>

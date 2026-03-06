@@ -1,0 +1,29 @@
+@page "/{ParentMenuURL}/dynamicbuttonprocess/add"
+@page "/{ParentMenuURL}/dynamicbuttonprocess/{ID}"
+
+@using IFinancing360_ICS_UI.Components.Setting.DynamicButtonProcessComponent
+@using IFinancing360_ICS_UI.Components.Setting.DynamicButtonProcessRoleComponent
+
+<Title Text="Dynamic Button Process Info" />
+<PageContainer>
+  <PageLock When=@(ID != null)>
+
+
+    <DynamicButtonProcessForm ID="@ID" ParentMenuURL=@ParentMenuURL />
+
+    <!-- #region List Detail -->
+    @if (ID != null)
+    {
+      <Divider />
+      <SectionTitle Text="Dynamic Button Process - Role List" />
+
+      <DynamicButtonProcessRoleDataGrid DynamicButtonProcessID="@ID" ParentMenuURL=@ParentMenuURL />
+    }
+    <!-- #endregion -->
+  </PageLock>
+</PageContainer>
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+
+}

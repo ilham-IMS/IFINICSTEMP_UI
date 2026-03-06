@@ -1,0 +1,50 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack>
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0004886">
+      <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+      </RoleAccess>
+      @* <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" /> *@
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack>
+      <RadzenRow>
+        <FormFieldButtonLookup Name="@($"ReferenceMasterDynamicReportColumnID_{row["ID"]}")" Label="Source Column"
+          Target="@referenceColumnLookup" Value="@(row["ReferenceMasterDynamicReportColumnID"]?.GetValue<string>())"
+          Text="@(row["ReferenceColumnAlias"]?.GetValue<string>())"
+          Title="Data Source From : Config - System Setting - Master Dynamic Report" Required />
+
+        <FormFieldButtonLookup Name="@($"DynamicReportTableID_{row["ID"]}")" Label="Table Reference"
+          Target="@referenceReportTableLookup" Value="@(row["DynamicReportTableID"]?.GetValue<string>())"
+          Text="@(row["TableAlias"]?.GetValue<string>())"
+          Title="Data Source From : Config - System Setting - Master Dynamic Report" Required />
+
+        <FormFieldButtonLookup Name="@($"MasterDynamicReportColumnID_{row["ID"]}")" Label="Column Reference"
+          Target="@columnLookup" Value="@(row["MasterDynamicReportColumnID"]?.GetValue<string>())"
+          Text="@(row["ColumnAlias"]?.GetValue<string>())"
+          Title="Data Source From : Config - System Setting - Master Dynamic Report" Required />
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+
+<!-- #endregion -->
+
+<SingleSelectLookup TItem="JsonObject" ID="MasterDynamicReportColumnLookup" @ref="columnLookup" Title="Column"
+  LoadData="@(LoadMasterDynamicReportColumnLookup)" Select="@(SelectColumn)">
+  <DataGridColumn TItem="JsonObject" Property="Alias" Title="Name" />
+</SingleSelectLookup>
+
+<SingleSelectLookup TItem="JsonObject" ID="ReferenceDynamicReportTableLookup" @ref="referenceReportTableLookup"
+  Title="Table Reference" LoadData="@(LoadReferenceDynamicReportTableLookup)" Select="@(SelectReferenceTable)">
+  <DataGridColumn TItem="JsonObject" Property="Alias" Title="Name" />
+</SingleSelectLookup>
+
+<SingleSelectLookup TItem="JsonObject" ID="MasterDynamicReportColumnLookup" @ref="referenceColumnLookup"
+  Title="Column Reference" LoadData="@(LoadReferenceMasterDynamicReportColumnLookup)" Select="@(SelectReferenceColumn)">
+  <DataGridColumn TItem="JsonObject" Property="Alias" Title="Name" />
+</SingleSelectLookup>

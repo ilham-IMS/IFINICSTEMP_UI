@@ -1,0 +1,52 @@
+<RadzenStack Gap="8">
+	
+	<RadzenRow Gap="32">
+		<FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())" Color="@(Color.Secondary)"/>
+	</RadzenRow>
+
+	<Divider />
+	
+	<TemplateForm Submit="@Save">
+		<RadzenStack Gap="16">
+			<DataGrid ID="DynamicReportUserDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+				AllowSelected="@(!IsReadOnly)">
+			<!-- #region Toolbar -->
+      <Buttons>
+
+			<RadzenRow Gap="8">
+				@if (!IsReadOnly)
+				{
+					<RoleAccess Code="RC0004887">
+						<Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+					</RoleAccess>
+					<RoleAccess Code="RD0001263">
+						<Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+					</RoleAccess>
+				}
+			</RadzenRow>
+      </Buttons>
+			<!-- #endregion -->
+
+			<!-- #region List Data -->
+      <Columns>
+				<DataGridColumn TItem="JsonObject" Property="UserCode" Title="Code" Width="25%" />
+				<DataGridColumn TItem="JsonObject" Property="UserName" Title="Name" Width="75%" />
+      </Columns>
+			</DataGrid>
+			<!-- #endregion -->
+		</RadzenStack>
+	</TemplateForm>
+
+
+
+	<MultipleSelectLookup TItem="JsonObject" ID="SysUserMainLookup" @ref="userMultiLookup" LoadData="LoadUserLookup" Title="User Access List">
+		<ToolbarTemplate>
+			<Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@AddToList" />
+		</ToolbarTemplate>
+
+		<ColumnsTemplate>
+			<DataGridColumn TItem="JsonObject" Property="Code" Title="Code" Width="25%" />
+			<DataGridColumn TItem="JsonObject" Property="EmployeeName" Title="Name" Width="75%" />
+		</ColumnsTemplate>
+	</MultipleSelectLookup>
+</RadzenStack>

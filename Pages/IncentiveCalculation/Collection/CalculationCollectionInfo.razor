@@ -1,0 +1,23 @@
+@page "/{ParentMenuURL}/collection/{ID}"
+@page "/{ParentMenuURL}/collection/add"
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collection
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collection.AgreementCollectionComponent
+
+<ReleaseLock />
+
+<Title Text="Calculation Info" />
+
+<RoleAccess Code="RA0002372">
+  <PageContainer>
+    <IncentiveCollectionForm ParentMenuURL=@ParentMenuURL ID=@ID/>
+
+    <Divider />
+    <SectionTitle Text="Agreement List" />
+    <AgreementCollectionDataGrid ParentMenuURL=@ParentMenuURL ID=@ID />
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+  [Parameter] public string? ID { get; set; }
+}

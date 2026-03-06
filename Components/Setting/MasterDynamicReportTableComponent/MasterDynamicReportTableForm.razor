@@ -1,0 +1,59 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0004865">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" /> 
+      </RoleAccess>  
+      
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+
+      <MultipleRoleAccess Code=@(new string[] {"RC0004862"})>
+        <RadzenStack Gap="8" Style="margin-left: auto;">
+          <RadzenRow Gap="32">
+            <ButtonDropdown Icon="manufacturing" Text="" RightIcon="true">
+            <Items>
+              <RoleAccess Code="RC0004862">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="dynamic_form" Text="Dynamic Form Setting" 
+                  Click="@GoToSetting"/>
+              </RoleAccess>
+              <RoleAccess Code="RC0004862">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="flowchart"  Text="Dynamic Process Setting"/>
+              </RoleAccess>
+            </Items>
+          </ButtonDropdown>
+          </RadzenRow>
+        </RadzenStack>
+        </MultipleRoleAccess>
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Name -->
+        <FormFieldTextBox Label="Table Name" Name="Name" Value="@(row["Name"]?.GetValue<string>())" Max="50" Required="true"
+          Disabled/>
+        <!-- #endregion -->
+
+        <!-- #region Alias -->
+        <FormFieldTextBox Label="Alias" Name="Alias" Value="@(row["Alias"]?.GetValue<string>())"
+          Max="50" Required="true" />
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->
+
+@if (controls?.Count > 0)
+{
+    <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+    <RadzenStack Gap="8" Style="margin-top: 1rem;">
+        <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+            @Form
+        </RadzenRow>
+    </RadzenStack>
+}

@@ -1,0 +1,37 @@
+<RadzenStack Gap="16">
+  <!-- #region List Data -->
+  <DataGrid ID="MasterReportUserDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="true">
+    <Buttons>
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0000121">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@(() => menuSysReportLookup.Open())" Icon="add" />
+        </RoleAccess>
+
+        <RoleAccess Code="RD0000053">
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@Delete" Icon="delete" />
+        </RoleAccess>
+      </RadzenRow>
+      <!-- #endregion -->
+    </Buttons>
+
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="ReportName" Title="Name" Width="50%" />
+      <DataGridColumn TItem="JsonObject" Property="ReportType" Title="Type" Width="60%" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>
+
+<!-- #region Lookup Add -->
+<MultipleSelectLookup @ref="menuSysReportLookup" ID="SysReportLookup" TItem="JsonObject" LoadData="GetRowsForLookup"
+  Title="Report Lookup">
+  <ToolbarTemplate>
+    <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@Add" Icon="add" />
+  </ToolbarTemplate>
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" Width="25%" />
+    <DataGridColumn TItem="JsonObject" Property="Name" Title="Name" Width="75%" />
+  </ColumnsTemplate>
+</MultipleSelectLookup>
+<!-- #endregion -->

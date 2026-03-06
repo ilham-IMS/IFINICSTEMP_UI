@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>32091bb2-d1a5-4e85-b2f6-52dedca1f6b0</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+    <PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+    <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="2.1.1" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.24.4" />
+    <PackageReference Include="Allegiance.Blazor.Highcharts" Version="7.0.5" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.8" />
+    <PackageReference Include="DotNetEnv" Version="3.0.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
+    <PackageReference Include="Z.Blazor.Diagrams" Version="3.0.2" />
+    <Reference Include="iFinancing360.UI">
+      <HintPath>Libraries\iFinancing360.UI.dll</HintPath>
+    </Reference>
+   <Reference Include="iFinancing360.Helper">
+    <HintPath>Libraries/iFinancing360.Helper.dll</HintPath>
+   </Reference>
+  </ItemGroup>
+
+</Project>

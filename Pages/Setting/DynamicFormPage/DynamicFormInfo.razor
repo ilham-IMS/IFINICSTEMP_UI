@@ -1,0 +1,29 @@
+@page "/{ParentMenuURL}/dynamicform/add"
+@page "/{ParentMenuURL}/dynamicform/{ID}"
+@using IFinancing360_ICS_UI.Components.Setting.DynamicFormComponent
+@using IFinancing360_ICS_UI.Components.Setting.DynamicFormControlsComponent
+
+<Title Text="Dynamic Field Info" />
+
+<RoleAccess Code="RA0002366">
+  <PageContainer>
+    <PageLock When="@(ID != null)">
+      <DynamicFormForm ID="@ID" ParentMenuURL=@ParentMenuURL/>
+
+      @if (ID != null)
+      {
+        <Divider />
+
+        <SectionTitle Text="Dynamic Field Controls List" />
+
+        <DynamicFormControlsDataGrid MasterFormID="@ID" ParentMenuURL=@ParentMenuURL/>
+      }
+    </PageLock>
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; } 
+  public JsonObject? GeneralCode { get; set; }
+}

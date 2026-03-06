@@ -1,0 +1,14 @@
+@page "/{ParentMenuURL}/masterdynamicbuttonprocess"
+@using IFinancing360_ICS_UI.Components.Setting.MasterDynamicButtonProcessComponent
+
+<Title Text="Master Dynamic Button Process List" />
+<RoleAccess Code="RA0002359">
+  <ReleaseLock />
+  <PageContainer>
+    <MasterDynamicButtonProcessDataGrid ParentMenuURL=@ParentMenuURL/>
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

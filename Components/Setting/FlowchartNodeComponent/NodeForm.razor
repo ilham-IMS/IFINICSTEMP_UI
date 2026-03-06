@@ -1,0 +1,31 @@
+<TemplateForm Submit="@OnSubmit">
+  <RadzenStack Gap="16">
+    <RadzenRow Gap="8">
+      <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+      <Button ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Danger" Text="Back" Click="@Back"
+        Icon="arrow_back" />
+    </RadzenRow>
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <FormFieldTextBox Label="Name" Name="NodeName" Value="@(row["NodeName"]?.GetValue<string>())" Required="true" />
+        <!-- #region Master Process -->
+        <FormFieldButtonLookup Name="MethodName" Label="Method Full Name" Target="masterProcessLookup"
+          Value=@(row["MethodName"]?.GetValue<string>()) Text=@(row["ShortDescription"]?.GetValue<string>())
+          Required="true" />
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+
+
+<SingleSelectLookup @ref="@masterProcessLookup" TItem="JsonObject" LoadData="LoadMasterProcessLookup"
+  Title="Master Dynamic Button Process List" Select=@((select) => { row["MethodName"] = select["MethodFullName"]?.DeepClone();
+  row["ShortDescription"] = select["ShortDescription"]?.GetValue<string>(); })>
+
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="MethodName" Title="Method Name" Width="40%" />
+    <DataGridColumn TItem="JsonObject" Property="ShortDescription" Title="Short Description" />
+  </ColumnsTemplate>
+
+</SingleSelectLookup>

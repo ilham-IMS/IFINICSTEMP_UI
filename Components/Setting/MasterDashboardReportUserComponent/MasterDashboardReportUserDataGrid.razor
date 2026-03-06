@@ -1,0 +1,29 @@
+<RadzenStack Gap="16">
+  <!-- #region List Data -->
+  <DataGrid ID="MasterDashboardReportUserDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+    AllowSelected="true">
+    <Buttons>
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0000090">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@Add" Icon="add" />
+        </RoleAccess>
+        <RoleAccess Code="RD0000051">
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@Delete" Icon="delete"
+            Disabled="@(Loading.IsLoading)" />
+        </RoleAccess>
+        <RadzenStack AlignItems="AlignItems.End">
+          <Button ButtonStyle="ButtonStyle.Success" Text="Print" Click="@Print" />
+        </RadzenStack>
+      </RadzenRow>
+      <!-- #endregion -->
+    </Buttons>
+
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="EmployeeCode" Title="Code" Width="50%"
+        Link="@(row => $"{ParentMenuURL}/masterdashboardreportuser/{row["ID"]}")" />
+      <DataGridColumn TItem="JsonObject" Property="EmployeeName" Title="Name" Width="60%" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>

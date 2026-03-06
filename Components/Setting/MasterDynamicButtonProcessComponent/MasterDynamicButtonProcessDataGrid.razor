@@ -1,0 +1,42 @@
+<RadzenStack Gap="16">
+  <DataGrid ID="MasterDynamicButtonProcessDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false"
+    RowLink="@(row => $"{ParentMenuURL}/masterdynamicbuttonprocess/{row["ID"]}")">
+
+    <!-- #region Toolbar -->
+    <Buttons>
+      <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End">
+        <RadzenRow Gap="8" Style="flex: 1 1 0;">
+          <RoleAccess Code="RA0002369">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" style="width: 100%;">
+
+              <!-- Button Row for Add -->
+              <RadzenRow Gap="8" style="width: 100%;">
+                <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+
+                <!-- Button Row for Upload DLL -->
+                <ButtonUpload Upload="@Upload" Text="Upload DLL" ButtonStyle="ButtonStyle.Success" Icon="upload" />
+              </RadzenRow>
+
+            </RadzenStack>
+          </RoleAccess>
+        </RadzenRow>
+      </RadzenStack>
+    </Buttons>
+    <!-- #endregion -->
+
+    <!-- #region List Data -->
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="MethodName" Title="Method Name" Width="20%" />
+      <DataGridColumn TItem="JsonObject" Property="Description" Title="Description" Width="60%" />
+      <DataGridColumn TItem="JsonObject" Property="IsActive" Title="Active" Width="20%" Format="YN"
+        TextAlign="TextAlign.Center" />
+      <DataGridColumn TItem="JsonObject" Property="Check" Title="Check" Width="20%" TextAlign="TextAlign.Center"
+        Filterable="false" Sortable="false" ExcludeFromRowClick>
+        <Template Context="row">
+          <Button Text="Check" Click="@( () => CheckMethod(row))" ButtonStyle="ButtonStyle.Info" />
+        </Template>
+      </DataGridColumn>
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>

@@ -1,0 +1,87 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0000122">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"
+          Visible="@(row["IsEditable"]?.GetValue<int>() != 1)" />
+      </RoleAccess>
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <!-- #region row -->
+      <RadzenRow Gap="32">
+        <!-- #region Code -->
+        <FormFieldTextBox Label="Code" Name="Code" Value="@(row["Code"]?.GetValue<string>())" Max="50" Required
+          Disabled=@(ID != null) />
+        <!-- #endregion -->
+
+        <!-- #region Dashboard Name -->
+        <FormFieldTextBox Label="Name" Name="DashboardName" Value="@(row["DashboardName"]?.GetValue<string>())"
+          Max="4000" Required Disabled="@(row["IsEditable"]?.GetValue<int>() == 1)" />
+        <!-- #endregion -->
+
+        <!-- #region Dashboard Type -->
+        <FormFieldDropdown Name="DashboardType" Label="Type" Value="@(row["DashboardType"]?.GetValue<string>())"
+          Required Items=@listDashboardType Disabled="@(row["IsEditable"]?.GetValue<int>() == 1)" />
+        <!-- #endregion -->
+      </RadzenRow>
+      <!-- #endregion -->
+
+      <!-- #region row -->
+      <RadzenRow Gap="32">
+        <!-- #region Dashboard Grid -->
+        <FormFieldDropdown Name="DashboardGrid" Label="Grid" Value="@(row["DashboardGrid"]?.GetValue<string>())"
+          Required Items=@listDashboardGrid Disabled="@(row["IsEditable"]?.GetValue<int>() == 1)" />
+        <!-- #endregion -->
+
+        <!-- #region sp name -->
+        <FormFieldTextBox Label="SP Name" Name="SpName" Value="@(row["SpName"]?.GetValue<string>())" Max="4000" Required
+          Disabled="@(row["IsEditable"]?.GetValue<int>() == 1)" />
+        <!-- #endregion -->
+
+        <!-- #region Active -->
+        <RoleAccess Code="RU0000080">
+          <!-- Authorize jika User memiliki hak akses -- dihapus -->
+          <Authorize>
+            <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>())
+              ValueChanged=@ChangeActive />
+          </Authorize>
+
+          <!-- NotAuthorize jika User tidak memiliki hak akses -- dihapus -->
+          <NotAuthorize>
+            <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) Disabled />
+          </NotAuthorize>
+        </RoleAccess>
+        <!-- #endregion -->
+      </RadzenRow>
+      <!-- #endregion -->
+
+      <!-- #region row -->
+      <RadzenRow Gap="32">
+        <!-- #region Editable -->
+        <RoleAccess Code="RO0000001">
+          <!-- Authorize jika User memiliki hak akses -- dihapus -->
+          <Authorize>
+            <FormFieldSwitch Name="IsEditable" Label="Editable" Value=@(row["IsEditable"]?.GetValue<int>())
+              ValueChanged=@ChangeEditable />
+          </Authorize>
+
+          <!-- NotAuthorize jika User tidak memiliki hak akses -- dihapus -->
+          <NotAuthorize>
+            <FormFieldSwitch Name="IsEditable" Label="Editable" Value=@(row["IsEditable"]?.GetValue<int>()) Disabled />
+          </NotAuthorize>
+        </RoleAccess>
+        <!-- #endregion -->
+      </RadzenRow>
+      <!-- #endregion -->
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

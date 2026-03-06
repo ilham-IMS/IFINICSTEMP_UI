@@ -1,0 +1,16 @@
+@page "/{ParentMenuURL}/incentivescheme"
+@using IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeComponent
+
+<ReleaseLock />
+
+<Title Text="Incentive Scheme List" />
+
+<RoleAccess Code="RA0002367">
+  <PageContainer>
+    <IncentiveSchemeDataGrid ParentMenuURL=@ParentMenuURL />
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

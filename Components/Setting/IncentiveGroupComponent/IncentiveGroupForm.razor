@@ -1,0 +1,79 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0004894">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"
+           />
+      </RoleAccess>
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+      <MultipleRoleAccess Code=@(new string[] {"RC0004895"})>
+        <RadzenStack Gap="8" Style="margin-left: auto;">
+          <RadzenRow Gap="32">
+            <ButtonDropdown Icon="manufacturing" Text="" RightIcon="true">
+              <Items>
+                <RoleAccess Code="RC0004895">
+                  <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="dynamic_form" Text="Dynamic Field Setting"
+                    Click="@GoToSetting" />
+                </RoleAccess>
+                <RoleAccess Code="RC0004895">
+                  <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="flowchart" Text="Dynamic Process Setting" />
+                </RoleAccess>
+              </Items>
+            </ButtonDropdown>
+          </RadzenRow>
+        </RadzenStack>
+      </MultipleRoleAccess>
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <!-- #region row -->
+      <RadzenRow Gap="32">
+        <!-- #region Incentive Type -->
+        <FormFieldDropdown TValue="string" ValueProperty="Key" TextProperty="Value" Name="IncentiveType" Label="Type" Value="@(row["IncentiveType"]?.GetValue<string>())"
+          Required Items=@listIncentiveType ValueChanged="@ChangeIncentiveType"/>
+        <!-- #endregion -->
+
+        <!-- #region Description -->
+        <FormFieldTextBox Label="Description" Name="GroupDescription" Value="@(row["GroupDescription"]?.GetValue<string>())" Required Max="250"
+           />
+        <!-- #endregion -->
+
+         <!-- #region Active -->
+        <RoleAccess Code="RU0000397">
+          <!-- Authorize jika User memiliki hak akses -- dihapus -->
+          <Authorize>
+            <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>())
+              ValueChanged=@ChangeActive />
+          </Authorize>
+
+          <!-- NotAuthorize jika User tidak memiliki hak akses -- dihapus -->
+          <NotAuthorize>
+            <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) Disabled />
+          </NotAuthorize>
+        </RoleAccess>
+        <!-- #endregion -->
+      </RadzenRow>
+      <!-- #endregion -->
+
+      
+
+    </RadzenStack>
+    @if (controls?.Count > 0)
+    {
+      <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+      <RadzenStack Gap="8" Style="margin-top: 1rem;">
+        <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+          @Form
+        </RadzenRow>
+      </RadzenStack>
+    }
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

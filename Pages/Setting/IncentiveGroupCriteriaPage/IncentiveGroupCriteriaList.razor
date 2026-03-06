@@ -1,0 +1,17 @@
+@page "/{ParentMenuURL}/incentivegroup/{IncentiveGroupID}/criteria"
+
+@using IFinancing360_ICS_UI.Components.Setting.IncentiveGroupCriteriaComponent
+@using IFinancing360_ICS_UI.Components.PanelMenuComponent
+
+<Title Text="Criteria List" />
+
+<IncentiveGroupPanelMenu IncentiveGroupID=@IncentiveGroupID>
+    <PageContainer>
+      <IncentiveGroupCriteriaDataGrid IncentiveGroupID=@IncentiveGroupID ParentMenuURL=@ParentMenuURL />
+    </PageContainer>
+</IncentiveGroupPanelMenu>
+
+@code {
+  [Parameter] public string? IncentiveGroupID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

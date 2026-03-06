@@ -1,0 +1,16 @@
+@page "/{ParentMenuURL}/masterdashboardreportuser"
+@using IFinancing360_ICS_UI.Components.Setting.MasterDashboardReportUserComponent
+
+<ReleaseLock />
+
+<Title Text="Master Dashboard & Report User List" />
+
+<RoleAccess Code="RA0000057">
+  <PageContainer>
+    <MasterDashboardReportUserDataGrid ParentMenuURL=@ParentMenuURL />
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

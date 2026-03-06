@@ -1,0 +1,22 @@
+<RadzenStack Gap="8">
+  <RadzenStack>
+    <SectionTitle Text="Fee List" />
+  </RadzenStack>
+  <RadzenStack Gap="16" Style="padding-top: 16px;">
+    <!-- #region List Data -->
+    <DataGrid @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false">
+      <!-- #region Type -->
+      <DataGridColumn TItem="JsonObject" Property="Fee" Title="Fee" Width="20%" />
+      <!-- #Endregion -->
+
+      <!-- #region Client -->
+      <DataGridColumn TItem="JsonObject" Property="FeeRate" Title="Fee Rate" Width="30%" />
+      <!-- #Endregion -->
+
+      <!-- #region Type -->
+      <DataGridColumn TItem="JsonObject" Property="FeeAmount" Title="Fee Amount" Width="50%" />
+      <!-- #Endregion -->
+
+    </DataGrid>
+  </RadzenStack>
+</RadzenStack>

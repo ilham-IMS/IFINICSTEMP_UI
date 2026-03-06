@@ -1,0 +1,36 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+      <RadzenRow Gap="8" Style="flex: 1 1 0;">
+        <RoleAccess Code="RP0000518">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Print" Icon="print" />
+        </RoleAccess>
+
+        @if (CanGoBack)
+        {
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+        }
+        <Locker />
+      </RadzenRow>
+    </RadzenStack>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Title -->
+        <FormFieldTextBox Label="Title" Name="Title" Value="@(row["Title"]?.GetValue<string>())" Max="50"
+          Required="true" Disabled="@(IsReadOnly)" />
+        <!-- #endregion -->
+      </RadzenRow>
+
+      <Divider />
+
+      <RadzenRow Gap="32">
+        @Form
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

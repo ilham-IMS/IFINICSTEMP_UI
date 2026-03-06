@@ -1,0 +1,64 @@
+<RadzenStack Gap="16">
+  <TemplateForm Submit="@Save">
+    <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+      AllowSelected="false">
+      <!-- #region Toolbar -->
+      <Buttons>
+
+        <RadzenRow Gap="8">
+          <RoleAccess Code="RC0004863">
+            <Button ButtonStyle="ButtonStyle.Info" ButtonType="ButtonType.Submit" Text="Save" Icon="save" />
+          </RoleAccess>
+          @* <RoleAccess Code="RD0000357"> *@
+          @* <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" /> *@
+          @* </RoleAccess> *@
+        </RadzenRow>
+      </Buttons>
+      <!-- #endregion -->
+
+      <!-- #region List Data -->
+      <Columns>
+        <DataGridColumn TItem="JsonObject" Property="Name" Title="Name" Width="40%" TextAlign="TextAlign.Left" />
+        <DataGridColumn TItem="JsonObject" Property="Alias" Title="Alias" Width="50%" TextAlign="TextAlign.Left">
+          <Template Context="row">
+            <FormFieldTextBox Name="@($"Alias_{row["ID"]}")" Value="@(row["Alias"]?.GetValue<string>())" />
+          </Template>
+        </DataGridColumn>
+        <DataGridColumn TItem="JsonObject" Property="IsAvailable" Title="Available" Width="10%" Format="YN">
+          <Template Context="row">
+            <RoleAccess Code="RC0000829">
+              <Authorize>
+                <RadzenStack AlignItems="AlignItems.Center">
+                  <FormFieldSwitch Name="@($"IsAvailable_{row["ID"]}")" Value="@(row["IsAvailable"]?.GetValue<int>())"
+                    ValueChanged="@(() => ChangeAvailable(row))" />
+                </RadzenStack>
+              </Authorize>
+              <NotAuthorize>
+                <Badge BadgeStyle="@(row["IsAvailable"]?.GetValue<int>() == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                  Text="@(row["IsAvailable"]?.GetValue<int>() == 1 ? "Yes" : "No")" />
+              </NotAuthorize>
+            </RoleAccess>
+          </Template>
+        </DataGridColumn>
+        <DataGridColumn TItem="JsonObject" Property="IsMasking" Title="Masking" Width="10%" Format="YN">
+          <Template Context="row">
+            <RadzenStack AlignItems="AlignItems.Center">
+              <RoleAccess Code="RC0000829">
+                <Authorize>
+                  <FormFieldSwitch Name="@($"IsMasking_{row["ID"]}")" Value="@(row["IsMasking"]?.GetValue<int>())"
+                    ValueChanged="@(() => ChangeMaskingStatus(row))" />
+                </Authorize>
+                <NotAuthorize>
+                  <Badge
+                    BadgeStyle="@(row["IsAvailable"]?.GetValue<int>() == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                    Text="@(row["IsAvailable"]?.GetValue<int>() == 1 ? "Yes" : "No")" />
+                </NotAuthorize>
+              </RoleAccess>
+            </RadzenStack>
+          </Template>
+        </DataGridColumn>
+      </Columns>
+    </DataGrid>
+    <!-- #endregion -->
+  </TemplateForm>
+</RadzenStack>

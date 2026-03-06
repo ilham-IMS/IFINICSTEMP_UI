@@ -1,0 +1,40 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0000123">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"/>
+      </RoleAccess>
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Description -->
+        <FormFieldTextBox Label="Description" Name="DocumentName" Value="@(row["DocumentName"]?.GetValue<string>())" Max="50"
+          Required />
+        <!-- #endregion -->
+
+        <!-- #region Active -->
+        <RoleAccess Code="RU0000073" >
+            <!-- Authorize jika User memiliki hak akses -- dihapus -->
+            <Authorize>
+                <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) ValueChanged=@ChangeActive  />
+            </Authorize>
+
+            <!-- NotAuthorize jika User tidak memiliki hak akses -- dihapus -->
+            <NotAuthorize>
+                <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) Disabled  />
+            </NotAuthorize>
+        </RoleAccess>
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

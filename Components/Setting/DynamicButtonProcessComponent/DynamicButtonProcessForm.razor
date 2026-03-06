@@ -1,0 +1,59 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+
+      <RadzenStack Gap="8">
+        <RadzenRow Gap="32">
+          <!-- #region Code -->
+          <FormFieldLabel Label="Code" Name="Code" Value="@(row["Code"]?.GetValue<string>())" Disabled="true"
+            Placeholder="Auto Generated" />
+          <!-- #endregion -->
+
+           @if (row["Type"]?.GetValue<string>() == "Child")
+          {
+            <!-- #region Parent -->
+            <FormFieldButtonLookup Name="ParentMenuID" Label="Menu" Target="parentLookup"
+              Value="@(row["ParentMenuID"]?.GetValue<string>())" Text="@(row["ParentMenuName"]?.GetValue<string>())"
+              Required=@(row["Type"]?.GetValue<string>() == "Child") Disabled=@(row["ModuleID"] == null)
+              Title="Data Source From : IFINSYS - System Setting - Menu" />
+            <!-- #endregion -->
+          }
+
+          <!-- #region Is Active -->
+          <FormFieldSwitch Name="IsActive" Label="Active" Value="@(row["IsActive"]?.GetValue<int>())" Disabled />
+
+        </RadzenRow>
+        <RadzenRow Gap="32">
+
+          <!-- #region Name -->
+          <FormFieldTextBox Label="Sub Menu" Name="Name" Value="@(row["Name"]?.GetValue<string>())" Required="true"
+            Max="250"  Disabled />
+          <!-- #endregion -->
+         
+        </RadzenRow>
+       
+      </RadzenStack>
+    
+  </RadzenStack>
+
+</TemplateForm>
+<!-- #endregion -->
+
+<!-- #region Parent Lookup -->
+<SingleSelectLookup ID="ParentMenuLookup" @ref="@parentLookup" TItem="JsonObject" LoadData="LoadParentLookup"
+  Title="Menu List" Select="@((select) => {
+								row["ParentMenuID"] = select["ID"]?.GetValue<string>();
+								row["ParentMenuName"] = select["Name"]?.GetValue<string>();
+								row["Type"] = "Child"; 
+								})">
+  <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" />
+  <DataGridColumn TItem="JsonObject" Property="Name" Title="Name" />
+</SingleSelectLookup>
+<!-- #endregion -->

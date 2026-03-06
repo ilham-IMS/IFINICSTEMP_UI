@@ -1,0 +1,16 @@
+@page "/{ParentMenuURL}/marketing"
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing
+
+<ReleaseLock />
+
+<Title Text="Marketing List" />
+
+<RoleAccess Code="RA0002371">
+  <PageContainer>
+    <IncentiveMarketingDataGrid ParentMenuURL=@ParentMenuURL />
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

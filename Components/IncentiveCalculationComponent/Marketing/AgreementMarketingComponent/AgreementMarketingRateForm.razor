@@ -1,0 +1,38 @@
+<!-- #region Form -->
+  <RadzenStack Gap="16">
+    <!-- #region BPE Calculations -->
+    <RadzenRow Gap="32" Class="mt-4">
+      <FormFieldNumeric Label="BPE Total (% of Net Finance)" Name="BPETotal" Value="@(row["BPETotal"]?.GetValue<decimal>())" Disabled />
+      <FormFieldNumeric Label="BPE Rate Amount" Name="BPERateAmount" Value="@(row["BPERateAmount"]?.GetValue<decimal>())" Disabled />
+      <FormFieldNumeric Label="BPE Ratio (Max 35%)" Name="BPERatio" Value="@(row["BPERatio"]?.GetValue<decimal>())" Disabled />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <!-- #region BPE Effect & Income -->
+    <RadzenRow Gap="32">
+      <FormFieldNumeric Label="BPE Effect" Name="BPEEffect" Value="@(row["BPEEffect"]?.GetValue<decimal>())" Disabled />
+      <FormFieldNumeric Label="BPE Income/ (Expense)" Name="BPEIncome" Value="@(row["BPEIncome"]?.GetValue<decimal>())" Disabled />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <!-- #region Non Interest Fields -->
+    <RadzenRow Gap="32">
+      <FormFieldTextBox Label="Non Interest Name" Name="NonInterestName" Value="@(row["NonInterestName"]?.GetValue<string>())" Disabled />
+      <FormFieldNumeric Label="Non Interest Expense" Name="NonInterestExpense" Value="@(row["NonInterestExpense"]?.GetValue<decimal>())" Disabled />
+      <FormFieldNumeric Label="Non Interest Effect Rate" Name="NonInterestEffectRate" Value="@(row["NonInterestEffectRate"]?.GetValue<decimal>())" Disabled />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <!-- #region Non Interest Amount -->
+    <RadzenRow Gap="32">
+      <FormFieldNumeric Label="Non Interest Effect Amount" Name="NonInterestEffectAmount" Value="@(row["NonInterestEffectAmount"]?.GetValue<decimal>())" Disabled />
+    </RadzenRow>
+    <!-- #endregion -->
+    <Divider />
+    <!-- #region Marketing Incentive -->
+    <RadzenRow Gap="32" >
+      <FormFieldNumeric Label="Marketing Incentive Ratio / Finance Amount" Name="MarketingIncentiveRatio" Value="@(row["MarketingIncentiveRatio"]?.GetValue<decimal>())" Required Disabled />
+      <FormFieldNumeric Label="Net Interest Margin after the above cost" Name="NetInterestMargin" Value="@(row["NetInterestMargin"]?.GetValue<decimal>())" Required Disabled />
+    </RadzenRow>
+    <!-- #endregion -->
+  </RadzenStack>

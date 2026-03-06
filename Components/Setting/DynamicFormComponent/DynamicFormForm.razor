@@ -1,0 +1,40 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Icon="save" Text="Save" />
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="Back" />
+
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Code -->
+        <FormFieldTextBox Label="Code" Name="Code" Value="@(row["Code"]?.GetValue<string>())" Max="10" Required
+          Disabled="@(ID != null)" Formatter=@(value => value.ToUpper()) />
+        <!-- #endregion -->
+
+        <!-- #region Name -->
+        <FormFieldTextBox Label="Name" Name="Name" Value="@(row["Name"]?.GetValue<string>())" Max="50" Required
+          Disabled="@(ID != null)" />
+        <!-- #endregion -->
+
+        <!-- #region Label -->
+        <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) ValueChanged=@ChangeActive />
+        <!-- #endregion -->
+      </RadzenRow>
+
+      <RadzenRow Gap="32">
+        <!-- #region Label -->
+        <FormFieldTextBox Label="Label" Name="Label" Value="@(row["Label"]?.GetValue<string>())" Max="50"
+          Required />
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

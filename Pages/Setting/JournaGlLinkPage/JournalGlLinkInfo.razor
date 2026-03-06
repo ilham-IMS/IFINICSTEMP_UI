@@ -1,0 +1,21 @@
+@page "/{ParentMenuURL}/gllink/add"
+@page "/{ParentMenuURL}/gllink/{ID}"
+
+@using IFinancing360_ICS_UI.Components.Setting.JournalGlLinkComponent
+
+<ReleaseLock />
+
+<Title Text="GL Link Info" />
+
+<RoleAccess Code="RA0000024">
+  <PageContainer>
+    <PageLock When="@(ID != null)">
+      <JournalGlLinkForm ID=@ID ParentMenuURL=@ParentMenuURL />
+    </PageLock>
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

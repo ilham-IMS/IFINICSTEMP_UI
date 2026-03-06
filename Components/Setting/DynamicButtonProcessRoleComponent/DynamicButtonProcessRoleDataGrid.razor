@@ -1,0 +1,23 @@
+<RadzenStack Gap="16">
+  <DataGrid ID="DynamicButtonProcessRoleDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected=true
+    RowLink="@((row => $"systemsetting/dynamicbuttonprocess/{DynamicButtonProcessID}/dynamicbuttonprocessrole/{row["ID"]}"))">
+    <Buttons>
+      <RadzenRow Gap="8">
+        @* <RoleAccess Code="RC0001403"> *@
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" />
+        @* </RoleAccess> *@
+        @* <RoleAccess Code="RD0000557"> *@
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+        @* </RoleAccess> *@
+      </RadzenRow>
+    </Buttons>
+
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" TextAlign="TextAlign.Center" Width="15%" />
+      <DataGridColumn TItem="JsonObject" Property="Name" Title="Name" />
+      <DataGridColumn TItem="JsonObject" Property="RoleAccess" Title="Role Access" TextAlign="TextAlign.Center"
+        Text="@((row) => roleAccess.Where(x => x.Value == row["RoleAccess"]?.GetValue<string>()).FirstOrDefault().Key)"
+        Width="20%" />
+    </Columns>
+  </DataGrid>
+</RadzenStack>

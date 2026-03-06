@@ -1,0 +1,138 @@
+@using IFinancing360_ICS_UI.Components.Setting.IncentiveGroupCriteriaComponent
+<RadzenStack Gap="16">
+  <IncentiveGroupCriteriaLabel ID="@IncentiveGroupID"/>
+  <Divider />
+
+  <!-- #region List Data -->
+  <DataGrid ID="IncentiveGroupCriteriaDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected>
+    <Buttons>
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0004893">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click=@Add Icon="add" />
+        </RoleAccess>
+
+        <RoleAccess Code="RD0001266">
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Click=@Delete Icon="delete" />
+        </RoleAccess>
+      </RadzenRow>
+      <!-- #endregion -->
+    </Buttons>
+
+    @* <DataGridColumn TItem="JsonObject" Property="CriteriaName" Title="Criteria" Width="30%" Link=@(row =>
+    $"systemsetting/masterquestiongroup/{QuestionGroupID}/masterquestiongroupcriteria/{row["ItemNo"]?.GetValue<int>()}")
+    /> *@
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="CriteriaID" Title="Criteria" Width="30%">
+        <Template Context="row">
+          <!-- #region Criteria -->
+          <FormFieldButtonLookup Target="CriteriaLookup" Name=@($"CriteriaID_{row["ID"]?.GetValue<string>()}")
+            Value=@(row["CriteriaID"]?.GetValue<string>()) Text=@(row["CriteriaDescription"]?.GetValue<string>()) Click=@(() =>
+            activeItemID = row["ID"]?.GetValue<string>() ?? "-") Style="text-align:left; width:100%;" 
+            Title="Data Source From : IFINSYS - System Setting - Criteria"/>
+          <!-- #endregion -->
+        </Template>
+      </DataGridColumn>
+      <DataGridColumn TItem="JsonObject" Property="CriteriaOperator" Title="Operator" Width="20%">
+        <Template Context="row">
+          <!-- #region Operator -->
+          <FormFieldDropdown Name=@($"CriteriaOperator_{row["ID"]?.GetValue<string>()}") TValue="string"
+            Value="@(row["CriteriaOperator"]?.GetValue<string>())" Items=@(operatorDict[row["ID"]?.ToString() ?? ""])
+            ValueChanged=@(async (value) => {row["CriteriaOperator"] = value; await TypeChanged(row);}) />
+          <!-- #endregion -->
+        </Template>
+      </DataGridColumn>
+      @* <DataGridColumn TItem="JsonObject" Property="ItemValueFrom" Title="From Value" Width="25%">
+        <Template Context="row">
+          <FormFieldTextBox Name=@($"ItemValueFrom_{row["ItemNo"]?.GetValue<int>().ToString()}")
+            Value="@(row["ItemValueFrom"]?.GetValue<string>())"
+            Disabled=@(string.IsNullOrEmpty(row["ItemID"]?.ToString()))
+            ValueChanged=@(async (value) => {
+              row["ItemValueFrom"] = value; 
+              await UpdateItemValueFrom(row);
+            }) />
+        </Template>
+      </DataGridColumn> *@
+      <DataGridColumn TItem="JsonObject" Property="ValueFrom" Title="From Value" Width="25%">
+					<Template Context="row">
+						<!-- #region Criteria value from -->
+						<FormFieldButtonLookup Value="@(row["ValueFrom"]?.GetValue<string>())"
+							Text="@(row["ValueFrom"]?.GetValue<string>())"
+							Title="Data Source From : IFINSYS - System Setting - Criteria value" Target=@CriteriaValueFromLookup
+							Click="@(() => targetValue = row)" ShowInput="true"
+							ValueChanged=@(async (value) => { row["ValueFrom"] = value; await UpdateItemValueFrom(row);
+            }) />
+						<!-- #endregion -->
+					</Template>
+			</DataGridColumn>
+      @* <DataGridColumn TItem="JsonObject" Property="ItemValueTo" Title="To Value" Width="25%">
+        <Template Context="row">
+          <FormFieldTextBox Name=@($"ItemValueTo_{row["ItemNo"]?.GetValue<int>().ToString()}")
+            Value="@(row["ItemValueTo"]?.GetValue<string>())"
+            Disabled=@(string.IsNullOrEmpty(row["ItemID"]?.ToString()) || row["CriteriaOperator"]?.GetValue<string>() !=
+            "BETWEEN")
+            ValueChanged=@(async (value) => {
+              row["ItemValueTo"] = value; 
+              await UpdateItemValueTo(row);
+            }) />
+        </Template>
+      </DataGridColumn> *@
+      <DataGridColumn TItem="JsonObject" Property="ValueTo" Title="To Value" Width="25%">
+        <Template Context="row">
+          <!-- #region Criteria value to -->
+          <FormFieldButtonLookup Value="@(row["ValueTo"]?.GetValue<string>())"
+            Text="@(row["ValueTo"]?.GetValue<string>())"
+            Title="Data Source From : IFINSYS - System Setting - Criteria value" Target=@CriteriaValueToLookup
+            Click="@(() => targetValue = row)" ShowInput="true"
+            ValueChanged=@(async (value) => { row["ValueTo"] = value; await UpdateItemValueTo(row);
+            }) Disabled=@(row["CriteriaOperator"]?.GetValue<string>() != "BETWEEN") />
+          @* Clear="@(() => ClearCriteriaValueTo(row))" *@
+          <!-- #endregion -->
+        </Template>
+      </DataGridColumn>
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>
+
+@* <!-- #region Lookup Criteria -->
+<SingleSelectLookup ID="LookupCriteria" @ref=@CriteriaLookup TItem="JsonObject" LoadData="LoadCriteria"
+  Title="Scoring Item List" Select="@((select) => SelectLookupCriteria(select))">
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" TextAlign="TextAlign.Center"/>
+    <DataGridColumn TItem="JsonObject" Property="Description" Title="Description" />
+  </ColumnsTemplate>
+</SingleSelectLookup>
+<!-- #endregion --> *@
+
+<!-- #region Criteria's lookup -->
+<SingleSelectLookup ID="CriteriaLookup" @ref=@CriteriaLookup TItem="JsonObject" LoadData="LoadCriteriaFromSys"
+	Title="Criteria List" Select=@( async (select) => { await SelectLookupCriteria(select); })>
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Type="typeof(string)" Property="Code" Title="Code" TextAlign="TextAlign.Center" />
+    <DataGridColumn TItem="JsonObject" Type="typeof(string)" Property="Description" Title="Description" />
+  </ColumnsTemplate>
+</SingleSelectLookup>
+<!-- #endregion -->
+
+<!-- #region Lookup Criteria Value From -->
+<SingleSelectLookup ID="LookupCriteriaValue" @ref=@CriteriaValueFromLookup TItem="JsonObject"
+LoadData="LoadCriteriaValue" Title="Criteria Value List"
+Select="@((select) => OnSelectDataCriteriaValue(select))">
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="Description" Title="Description" />
+    <DataGridColumn TItem="JsonObject" Property="Value" Title="Value" />
+  </ColumnsTemplate>
+</SingleSelectLookup>
+<!-- #endregion -->
+
+<!-- #region Lookup Criteria Value To -->
+<SingleSelectLookup ID="LookupCriteriaValue" @ref=@CriteriaValueToLookup TItem="JsonObject"
+LoadData="LoadCriteriaValueTo" Title="Criteria Value List"
+Select="@((select) => OnSelectDataCriteriaValueTo(select))">
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="Description" Title="Description" />
+    <DataGridColumn TItem="JsonObject" Property="Value" Title="Value" />
+  </ColumnsTemplate>
+</SingleSelectLookup>
+<!-- #endregion -->

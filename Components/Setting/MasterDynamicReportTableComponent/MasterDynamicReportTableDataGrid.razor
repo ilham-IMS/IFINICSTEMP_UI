@@ -1,0 +1,46 @@
+<RadzenStack Gap="16">
+  <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+    AllowSelected="true" RowLink="@(row => $"{ParentMenuURL}/masterdynamicreport/{row["ID"]}")">
+    <!-- #region Toolbar -->
+    <Buttons>
+
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0004864">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+        </RoleAccess>
+        <RoleAccess Code="RD0001257">
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+        </RoleAccess>
+        <MultipleRoleAccess Code=@(new string[] { "RP0000665" })>
+          <ButtonDropdown Text="Action">
+            <Items>
+              <RoleAccess Code="RP0000665">
+                <ButtonDropdownItem Text="Export to Excel " Click="@Print" />
+              </RoleAccess>
+            </Items>
+          </ButtonDropdown>
+        </MultipleRoleAccess>
+      </RadzenRow>
+    </Buttons>
+    <!-- #endregion -->
+
+    <!-- #region List Data -->
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="Name" Title="Table Name" Width="50%" TextAlign="TextAlign.Left" />
+      <DataGridColumn TItem="JsonObject" Property="Alias" Title="Alias" Width="50%" TextAlign="TextAlign.Left" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>
+
+<MultipleSelectLookup TItem="JsonObject" ID="InformationSchemaTableDataGrid" @ref="informationSchemaTableLookup"
+  Title="Table List" LoadData="LoadInformationSchemaTableLookup">
+  <ToolbarTemplate>
+    <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Save" />
+  </ToolbarTemplate>
+
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="Name" Title="Name" Width="70%" TextAlign="TextAlign.Left" />
+    <DataGridColumn TItem="JsonObject" Property="Type" Title="Type" Width="30%" TextAlign="TextAlign.Center" />
+  </ColumnsTemplate>
+</MultipleSelectLookup>

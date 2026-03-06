@@ -1,0 +1,99 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="8">
+    <RadzenRow Gap="32">
+      <FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())"
+        Color="@(Color.Secondary)" />
+    </RadzenRow>
+
+    <Divider />
+
+    <RadzenStack Gap="16">
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        @if (!IsReadOnly)
+        {
+          <RoleAccess Code="RC0004884">
+          <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+          </RoleAccess>
+        }
+
+        <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+
+        <MultipleRoleAccess Code=@(new string[] { "RC0004869" })>
+          <RadzenStack Gap="8" Style="margin-left: auto;">
+            <RadzenRow Gap="32">
+              <ButtonDropdown Icon="manufacturing" Text="" RightIcon="true">
+                <Items>
+                  <RoleAccess Code="RC0004869">
+                    <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="dynamic_form" Text="Dynamic Form Setting"
+                      Click="@GoToSetting" />
+                  </RoleAccess>
+                  <RoleAccess Code="RC0004869">
+                    <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="flowchart"
+                      Text="Dynamic Process Setting" />
+                  </RoleAccess>
+                </Items>
+              </ButtonDropdown>
+            </RadzenRow>
+          </RadzenStack>
+        </MultipleRoleAccess>
+        <Locker />
+      </RadzenRow>
+      <!-- #endregion -->
+
+      <RadzenStack Gap="8">
+        <RadzenRow Gap="32">
+          <!-- #region Table -->
+          <FormFieldButtonLookup Label="Table" Name="MasterDynamicReportTableID"
+            Value="@(row["MasterDynamicReportTableID"]?.GetValue<string>())"
+            Text="@(row["TableName"]?.GetValue<string>())" Target="@tableLookup" Required Disabled=@(ID != null)
+            Title="Data Source From : Config - System Setting - Master Dynamic Report" />
+          <!-- #endregion -->
+
+          <!-- #region Name -->
+          <FormFieldTextBox Label="Alias" Name="Alias" Value="@(row["Alias"]?.GetValue<string>())" Max="50" Required
+            Disabled=@(IsReadOnly) />
+          <!-- #endregion -->
+
+          @* <!-- #region IsTableReference -->
+          <FormFieldSwitch Label="Reference" Name="IsTableReference" Value="@(row["IsTableReference"]?.GetValue<int>())"
+            Disabled=@IsReadOnly ValueChanged="@(value => ChangeIsTableReference(value))" Visible=@(ID != null)/>
+          <!-- #endregion --> *@
+
+          <!-- #region Table Reference -->
+          <FormFieldButtonLookup Label="Table Reference" Name="ReferenceDynamicReportTableID"
+            Value="@(row["ReferenceDynamicReportTableID"]?.GetValue<string>())"
+            Text="@(row["ReferenceTableAlias"]?.GetValue<string>())" Target="@referenceReportTableLookup" Required=@(ID != null && row["IsTableReference"]?.GetValue<int>() == 1) Disabled=@(IsReadOnly) Visible=@(ID != null && row["IsTableReference"]?.GetValue<int>() == 1)
+            Title="Data Source From : Config - System Setting - Master Dynamic Report" />
+          <!-- #endregion -->
+
+          <FormFieldDropdown Label="Join Clause" Items="@joinClauseDict" Name="JoinClause"
+            Value="@(row["JoinClause"]?.GetValue<string>())" Required Disabled=@(IsReadOnly) Visible=@(ID != null && row["IsTableReference"]?.GetValue<int>() == 1) />
+        </RadzenRow>
+      </RadzenStack>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->
+@if (controls?.Count > 0)
+{
+  <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+  <RadzenStack Gap="8" Style="margin-top: 1rem;">
+    <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+      @Form
+    </RadzenRow>
+  </RadzenStack>
+}
+
+<SingleSelectLookup ID="MasterDynamicReportTableLookup" Title="Table" @ref="tableLookup" TItem="JsonObject"
+  Select="@(SelectTable)" LoadData="@(LoadMasterDynamicReportTableLookup)">
+  <DataGridColumn TItem="JsonObject" Property="Alias" Title="Name" />
+</SingleSelectLookup>
+
+
+<SingleSelectLookup TItem="JsonObject" ID="ReferenceDynamicReportTableLookup" @ref="referenceReportTableLookup"
+  Title="Table Reference" LoadData="@(LoadReferenceDynamicReportTableLookup)" Select="@(SelectReferenceTable)">
+  <DataGridColumn TItem="JsonObject" Property="Alias" Title="Table" />
+</SingleSelectLookup>

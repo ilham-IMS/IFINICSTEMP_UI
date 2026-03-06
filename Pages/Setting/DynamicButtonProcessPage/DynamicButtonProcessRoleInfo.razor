@@ -1,0 +1,26 @@
+@page "/{ParentMenuURL}/dynamicbuttonprocess/{DynamicButtonProcessID}/dynamicbuttonprocessrole/add"
+@page "/{ParentMenuURL}/dynamicbuttonprocess/{DynamicButtonProcessID}/dynamicbuttonprocessrole/{ID}"
+
+@using IFinancing360_ICS_UI.Components.Setting.DynamicButtonProcessRoleComponent
+@using IFinancing360_ICS_UI.Components.Setting.FlowchartNodeComponent
+
+<Title Text="Dynamic Button Process - Role Info" />
+<RoleAccess Code="RA0002370">
+  <PageContainer>
+	  <PageLock When="@(ID != null)">
+
+    <DynamicButtonProcessRoleForm ID=@ID DynamicButtonProcessID="@DynamicButtonProcessID" ParentMenuURL=@ParentMenuURL />
+
+    @if (ID != null)
+    {
+      <FlowchartNode DynamicButtonProcessRoleID="@ID" DynamicButtonProcessID="@DynamicButtonProcessID" ParentMenuURL=@ParentMenuURL/>
+    }
+	  </PageLock>
+	</PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? DynamicButtonProcessID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

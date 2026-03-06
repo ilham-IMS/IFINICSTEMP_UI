@@ -1,0 +1,474 @@
+@inherits IFINComponent
+
+<RadzenColumn SizeSM=@(ChartTabletSize) SizeMD=@(ChartDesktopSize)>
+@if (IsLoading)
+{
+  <!-- #region Skeleton Loading -->
+  <div class="skeleton-chart-box">
+    <div class="skeleton skeleton-header"></div>
+    <div class="skeleton skeleton-filter"></div>
+    <div class="skeleton skeleton-chartview">
+      <i>Please wait! Loading time...</i>
+    </div>
+  </div>
+  <!-- #endregion -->
+}
+else
+{
+  <!-- #region chart-display-card -->
+  <div class="chart-display-card">
+
+    @if(IsCardSuccess) {
+      <!-- #region Header chart-display-card -->
+      <div class="chart-header">
+        <span 
+          class="material-symbols-outlined" 
+          style=@($"color: {MasterDashboard["Color"]?.GetValue<string>() ?? RandomColor}")>
+          @(MasterDashboard["Icon"]?.GetValue<string>() ?? RandomIcon)
+        </span>
+
+        <p class="chart-title">
+          @(ChartTitle)
+        </p>
+
+        <button 
+          class="material-symbols-outlined" 
+          style="background-color: transparent; border: none; font-size: 1.5em; color: #B7B7B7;"
+          @onclick=@(() => IsDescriptionExpand = true)>
+          info
+        </button>
+
+        @if(IsDescriptionExpand){
+          <div class="chart-description-modal">
+            <div class="desccription-modal-header">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <span 
+                  class="material-symbols-outlined" 
+                  style=@($"color: {MasterDashboard["Color"]?.GetValue<string>() ?? RandomColor}")>
+                  @(MasterDashboard["Icon"]?.GetValue<string>() ?? RandomIcon)
+                </span>
+
+                <p class="chart-title">
+                  @(ChartTitle)
+                </p>
+              </div>
+
+              <div style="height: 100%; display: flex; align-items: center;">
+                <button class="close-overlay-button" @onclick=@(() => IsDescriptionExpand = false)>
+                  <span class="material-symbols-outlined" style="color: black;">close</span>
+                </button>
+              </div>
+            </div>
+
+            <Divider />
+
+            <p style="width: 100%; font-size: 0.9rem; overflow-y: auto;">
+              @(MasterDashboard["Description"]?.GetValue<string>() ?? "Lorem ipsumm at paess..(cakepp).. coming soon ya gess")
+            </p>
+          </div>
+        }
+      </div>
+      <!-- #endregion -->
+
+      <!-- #region Filters Chart -->
+      @if(FilterComponents.Count > 0) {
+        <CascadingValue Value="@this">
+
+          <div class="chart-filters" style="padding: 0.25rem 0 0.5rem;">
+            <RadzenRow>
+              <RadzenColumn 
+                SizeSM=@(((FilterComponents.Count() < 3 && ChartTabletSize >= 4) || FilterComponents.Count() < 2) ? 12 : ChartTabletSize >= 4 ? 9 : 8) 
+                SizeMD=@(((FilterComponents.Count() < 3 && ChartDesktopSize >= 3) || FilterComponents.Count() < 2) ? 12 : ChartDesktopSize >= 3 ? 10 : 8)>
+
+                <RadzenRow Gap="16" Style="overflow-x: auto;">
+
+                  @foreach (var FilterComponent in FilterComponents.Take(ChartTabletSize >= 4 || ChartDesktopSize >= 3 ? 2 : 1))
+                  {
+                    <RadzenColumn SizeSM=@(ChartTabletSize >= 4 ? 6 : 12)>
+                      @if (FilterComponent["InputType"]?.ToString().ToLower() == "dropdown")
+                      {
+                        <!-- #region Dropdown -->
+                        <FormFieldDropdown 
+                          id=@(FilterComponent["ID"]?.ToString()!)
+                          Placeholder=@(FilterComponent["FilterLabel"]?.ToString())
+                          TValue="string" 
+                          ValueProperty="Key" 
+                          TextProperty="Value" 
+                          Items=@(FilterOptions[FilterComponent["ID"].ToString()!] ?? new Dictionary<string, string>(){})
+                          Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()}"]?.ToString())
+                          ValueChanged=@(
+                            value =>
+                              FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, value)
+                          )
+                        />
+                        <!-- #endregion -->
+                      }
+                      else if (FilterComponent["InputType"]?.ToString().ToLower() == "lookup")
+                      {
+                        <!-- #region Button lookup -->
+                        <FormFieldButtonLookup 
+                          Placeholder=@(FilterComponent["FilterLabel"]?.ToString())
+                          Target=@(FilterLookups[FilterComponent["ID"]?.ToString()!]) 
+                          Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()}_Value-{FilterComponent["ID"]?.ToString()!}"]?.ToString())
+                          Text=@(FilterData[$"{FilterComponent["InputName"]?.ToString()}_Description-{FilterComponent["ID"]?.ToString()!}"]?.ToString()) 
+                          Clear="@(
+                            async () => 
+                            {
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Value-{FilterComponent["ID"]?.ToString()!}"] = null;
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Description-{FilterComponent["ID"]?.ToString()!}"] = null;
+                            }
+                          )"
+                        />
+                        <!-- #endregion -->
+
+                        <!-- #region Single Select lookup -->
+                        <SingleSelectLookup
+                          ID=@(FilterComponent["ID"]?.ToString())
+                          Title=@($"{FilterComponent["FilterLabel"]?.ToString()} Lookup")
+                          @ref=@(FilterLookups[FilterComponent["ID"]?.ToString()!])
+                          TItem="JsonObject"
+                          LoadData=@(
+                            args =>
+                              LoadDataForLookup(args, FilterComponent)
+                          )
+                          Select=@(
+                            async (select) =>
+                            {
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Code-{FilterComponent["ID"]?.ToString()!}"] = select["Code"]?.ToString();
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Description-{FilterComponent["ID"]?.ToString()!}"] = select["Description"]?.ToString();
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Value-{FilterComponent["ID"]?.ToString()!}"] = select["Value"]?.ToString();
+
+                              await LoadChart();
+                            }
+                          )>
+                          <ColumnsTemplate>
+                            <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" Width="30%" />
+                            <DataGridColumn TItem="JsonObject" Property="Description" Title="Description" Width="70%" />
+                          </ColumnsTemplate>
+                        </SingleSelectLookup>
+                        <!-- #endregion -->
+                      } else if (FilterComponent["InputType"]?.ToString().ToLower() == "time") {
+                          
+                        @if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "month") {
+                          <!-- #region Month dropdown -->
+                          <FormFieldDropdown
+                            id=@(FilterComponent["ID"]?.ToString()!)
+                            Placeholder=@(FilterComponent["FilterLabel"]?.ToString())
+                            TValue="string"
+                            ValueProperty="Key"
+                            TextProperty="Value"
+                            Items=@(FilterOptions[FilterComponent["ID"].ToString()!] ?? MonthOptions)
+                            Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()!}"]?.ToString())
+                            ValueChanged=@(
+                              value =>
+                                FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, value)
+                            )
+                          />
+                          <!-- #endregion -->
+                        } else if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "year") {
+                          <!-- #region Year dropdown -->
+                          <FormFieldDropdown
+                            id=@(FilterComponent["ID"]?.ToString()!)
+                            Placeholder=@(FilterComponent["FilterLabel"]?.ToString())
+                            TValue="string"
+                            ValueProperty="Key"
+                            TextProperty="Value"
+                            Items=@(FilterOptions[FilterComponent["ID"].ToString()!] ?? YearOptions)
+                            Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()!}"]?.ToString())
+                            ValueChanged=@(
+                              value =>
+                                FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, value)
+                            )
+                          />
+                          <!-- #endregion -->
+                        } else if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "full_date") {
+                          <!-- #region Full Date -->
+                          <FormFieldDatePicker 
+                            Placeholder=@(FilterComponent["FilterLabel"]?.ToString()) 
+                            Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()!}"]?.GetValue<DateTime>())
+                            ValueChanged=@(
+                              value =>
+                                FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, null, value)
+                            )
+                          />
+                          <!-- #endregion Full Date -->
+                        } else if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "time_range") {
+                          <RadzenRow Gap="8">
+                            <!-- #region From Date -->
+                            <FormFieldDatePicker
+                              Size="6"
+                              Placeholder=@($"{FilterComponent["FilterLabel"]?.ToString()} From")
+                              Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}_From-{FilterComponent["ID"]?.ToString()!}"]?.GetValue<DateTime>())
+                              ValueChanged=@(
+                                value => 
+                                  FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, null, value, "From")
+                              )
+                            />
+                            <!-- #endregion From Date -->
+
+                            <!-- #region To Date -->
+                            <FormFieldDatePicker
+                              Size="6"
+                              Placeholder=@($"{FilterComponent["FilterLabel"]?.ToString()} To")
+                              Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}_To-{FilterComponent["ID"]?.ToString()!}"]?.GetValue<DateTime>())
+                              ValueChanged=@(
+                                value =>
+                                  FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, null, value, "To")
+                              )
+                            />
+                            <!-- #endregion To Date -->
+                          </RadzenRow>
+                        }
+                      }
+                    </RadzenColumn>
+                  }
+                </RadzenRow>
+
+              </RadzenColumn>
+
+              @if( 
+                 FilterComponents.Count > 2 
+                 || 
+                 (FilterComponents.Count > 1 && ChartTabletSize > 4 && ChartTabletSize < 6 || ChartDesktopSize > 3 && ChartDesktopSize < 6)
+                 
+                 ) {
+
+             
+                 <RadzenColumn SizeSM=@(ChartTabletSize >= 4 ? 3 : 4) SizeMD=@(ChartDesktopSize >= 3 ? 2 : 4)>
+                  <RadzenRow Style="height: 100%;" AlignItems="AlignItems.Stretch">
+
+                    <button class="filter-inspect-button" @onclick=@(() => IsFilterExpand=true)>
+                      <span class="material-symbols-outlined" style="font-size: 1.35em;">frame_inspect</span>
+
+                      <p style="margin-bottom: 0px; font-size: 1.1em; font-weight: 700;">Filter</p>
+                    </button>
+
+                  </RadzenRow>
+                </RadzenColumn>
+
+              }
+            </RadzenRow>
+
+            @if(IsFilterExpand) {
+              <div class="chart-filter-overlay">
+                <div class="filter-overlay-header">
+                  <div class="filter-overlay-header-title">
+                    <p class="filter-overlay-title">Filter</p>
+
+                    <button class="close-overlay-button" @onclick=@(() => IsFilterExpand = false)>
+                      <span class="material-symbols-outlined" style="color: black;">close</span>
+                    </button>
+                  </div>
+
+                  <Divider />
+                </div>
+
+                <RadzenRow Style="margin-bottom: 16px;">
+                  @foreach (var FilterComponent in FilterComponents.Skip(ChartTabletSize >= 4 || ChartDesktopSize >= 3 ? 2 : 1))
+                  {
+                    <RadzenColumn SizeSM=@(ChartTabletSize >= 4 ? 6 : 12)>
+                      @if (FilterComponent["InputType"]?.ToString().ToLower() == "dropdown")
+                      {
+                        <!-- #region Dropdown -->
+                        <FormFieldDropdown
+                          id=@(FilterComponent["ID"]?.ToString()!)
+                          Label=@(FilterComponent["FilterLabel"]?.ToString())
+                          TValue="string"
+                          ValueProperty="Key"
+                          TextProperty="Value" 
+                          Items=@(FilterOptions[FilterComponent["ID"].ToString()!] ?? new Dictionary<string, string>(){})
+                          Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()}"]?.ToString())
+                          ValueChanged=@(
+                            value =>
+                              FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, value)
+                          ) 
+                        />
+                        <!-- #endregion -->
+                      }
+                      else if (FilterComponent["InputType"]?.ToString().ToLower() == "lookup")
+                      {
+                        <!-- #region Button lookup -->
+                        <FormFieldButtonLookup 
+                          Label=@(FilterComponent["FilterLabel"]?.ToString())
+                          Target=@(FilterLookups[FilterComponent["ID"]?.ToString()!]) 
+                          Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()}_Value-{FilterComponent["ID"]?.ToString()!}"]?.ToString())
+                          Text=@(FilterData[$"{FilterComponent["InputName"]?.ToString()}_Description-{FilterComponent["ID"]?.ToString()!}"]?.ToString()) 
+                          Clear="@(
+                            async () => 
+                            {
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Value-{FilterComponent["ID"]?.ToString()!}"] = null;
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Description-{FilterComponent["ID"]?.ToString()!}"] = null;
+                            }
+                          )"
+                        />
+                        <!-- #endregion -->
+
+                        <!-- #region Single Select lookup -->
+                        <SingleSelectLookup
+                          ID=@(FilterComponent["ID"]?.ToString())
+                          Title=@($"{FilterComponent["FilterLabel"]?.ToString()} Lookup")
+                          @ref=@(FilterLookups[FilterComponent["ID"]?.ToString()!])
+                          TItem="JsonObject"
+                          LoadData=@(
+                            args =>
+                              LoadDataForLookup(args, FilterComponent)
+                          )
+                          Select=@(
+                            async (select) =>
+                            {
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Code-{FilterComponent["ID"]?.ToString()!}"] = select["Code"]?.ToString();
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Description-{FilterComponent["ID"]?.ToString()!}"] = select["Description"]?.ToString();
+                              FilterData[$"{FilterComponent["InputName"]?.ToString()}_Value-{FilterComponent["ID"]?.ToString()!}"] = select["Value"]?.ToString();
+
+                              await LoadChart();
+                            }
+                          )>
+                          <ColumnsTemplate>
+                            <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" Width="30%" />
+                            <DataGridColumn TItem="JsonObject" Property="Description" Title="Description" Width="70%" />
+                          </ColumnsTemplate>
+                        </SingleSelectLookup>
+                        <!-- #endregion -->
+                      } else if (FilterComponent["InputType"]?.ToString().ToLower() == "time") {
+                          
+                        @if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "month") {
+                          <!-- #region Month dropdown -->
+                          <FormFieldDropdown
+                            id=@(FilterComponent["ID"]?.ToString()!)
+                            Label=@(FilterComponent["FilterLabel"]?.ToString())
+                            TValue="string"
+                            ValueProperty="Key"
+                            TextProperty="Value"
+                            Items=@(FilterOptions[FilterComponent["ID"].ToString()!] ?? MonthOptions)
+                            Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()!}"]?.ToString())
+                            ValueChanged=@(
+                              value =>
+                                FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, value)
+                            )
+                          />
+                          <!-- #endregion -->
+                        } else if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "year") {
+                          <!-- #region Year dropdown -->
+                          <FormFieldDropdown
+                            id=@(FilterComponent["ID"]?.ToString()!)
+                            Label=@(FilterComponent["FilterLabel"]?.ToString())
+                            TValue="string"
+                            ValueProperty="Key"
+                            TextProperty="Value"
+                            Items=@(FilterOptions[FilterComponent["ID"].ToString()!] ?? YearOptions)
+                            Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()!}"]?.ToString())
+                            ValueChanged=@(
+                              value =>
+                                FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, value)
+                            )
+                          />
+                          <!-- #endregion -->
+                        } else if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "full_date") {
+                          <!-- #region Full Date -->
+                          <FormFieldDatePicker 
+                            Label=@(FilterComponent["FilterLabel"]?.ToString()) 
+                            Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}-{FilterComponent["ID"]?.ToString()!}"]?.GetValue<DateTime>())
+                            ValueChanged=@(
+                              value =>
+                                FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, null, value)
+                            )
+                          />
+                          <!-- #endregion Full Date -->
+                        } else if(FilterComponent["InputTimeType"]?.ToString().ToLower() == "time_range") {
+                          <RadzenRow Gap="8">
+                            <!-- #region From Date -->
+                            <FormFieldDatePicker
+                              Label=@($"{FilterComponent["FilterLabel"]?.ToString()} From")
+                              Size="6"
+                              Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}_From-{FilterComponent["ID"]?.ToString()!}"]?.GetValue<DateTime>())
+                              ValueChanged=@(
+                                value => 
+                                  FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, null, value, "From")
+                              )
+                            />
+                            <!-- #endregion From Date -->
+
+                            <!-- #region To Date -->
+                            <FormFieldDatePicker
+                              Label=@($"{FilterComponent["FilterLabel"]?.ToString()} To")
+                              Size="6"
+                              Value=@(FilterData[$"{FilterComponent["InputName"]?.ToString()!}_To-{FilterComponent["ID"]?.ToString()!}"]?.GetValue<DateTime>())
+                              ValueChanged=@(
+                                value =>
+                                  FilterValueChanged(FilterComponent["InputName"]?.ToString()!, FilterComponent["ID"]?.ToString()!, null, value, "To")
+                              )
+                            />
+                            <!-- #endregion To Date -->
+                          </RadzenRow>
+                        }
+                      }
+                    </RadzenColumn>
+                  }
+                </RadzenRow>
+                  <button class="filter-apply-reset-btn btn-reset">
+                    <span style="min-width: 80px;">Reset</span>
+                  </button>
+                @* <div class="filter-overlay-footer" onclick=@(() => FilterReset())>
+                  <button class="filter-apply-reset-btn btn-reset">
+                    <span style="min-width: 80px;">Reset</span>
+                  </button>
+                </div> *@
+              </div>
+            }
+          </div>
+
+          <Divider MarginBottom="0rem" MarginTop="0rem" />
+        </CascadingValue>
+      }
+      <!-- #endregion -->
+
+      <!-- #region Chart display & fallback-view -->
+      @if (IsCardSuccess)
+      {
+        <div id="@(id)" style="position: relative;"></div>
+      }
+      else
+      {
+        <div class="chart-fallback-wrapper">
+          <p class="chart-error-message">
+            Failed to load chart <span class="material-symbols-outlined" style="color: #D32F2F;">trending_down</span>
+          </p>
+
+          <Button 
+            ButtonStyle="ButtonStyle.Info" 
+            Text="Retry" 
+            Icon="refresh" 
+            Click=@(ReloadChart) />
+
+          <p style="text-align: center;">Something went wrong. Try refreshing or check your internet connection</p>
+        </div>
+      }
+      <!-- #endregion -->
+    } else {
+      <!-- #region chart-display-card's fallback-view -->
+      <div class="chart-fallback-wrapper">
+        <p class="chart-error-message">
+          Failed to load chart <span class="material-symbols-outlined" style="color: #D32F2F;">trending_down</span>
+        </p>
+
+        <ul>
+          @foreach(var errorItem in Errors) {
+            <li>@(errorItem)</li>
+          }
+        </ul>
+
+        <Button 
+          ButtonStyle="ButtonStyle.Info" 
+          Text="Retry" 
+          Icon="refresh" 
+          Click=@(ReloadChart) />
+        
+        <p style="text-align: center;">Something went wrong. Try refreshing or check your internet connection</p>
+      </div>
+      <!-- #endregion -->
+    }
+
+  </div>
+  <!-- #endregion -->
+}
+</RadzenColumn>

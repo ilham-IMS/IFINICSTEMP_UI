@@ -1,0 +1,86 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0004898">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+      </RoleAccess>
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+
+      <MultipleRoleAccess Code=@(new string[] {"RC0004898"})>
+        <RadzenStack Gap="8" Style="margin-left: auto;">
+          <RadzenRow Gap="32">
+            <ButtonDropdown Icon="manufacturing" Text="" RightIcon="true">
+            <Items>
+              <RoleAccess Code="RC0004898">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="dynamic_form" Text="Dynamic Field Setting" 
+                  Click="@GoToSetting"/>
+              </RoleAccess>
+              <RoleAccess Code="RC0004898">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="flowchart"  Text="Dynamic Process Setting"/>
+              </RoleAccess>
+            </Items>
+          </ButtonDropdown>
+          </RadzenRow>
+        </RadzenStack>
+        </MultipleRoleAccess>
+      
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region DllName -->
+        <FormFieldTextBox Label="Dll Name" Name="DllName" Value="@(row["DllName"]?.GetValue<string>())"
+          Required="true" />
+        <!-- #endregion -->
+
+        <!-- #region NamespaceName -->
+        <FormFieldTextBox Label="Namespace Name" Name="NamespaceName"
+          Value="@(row["NamespaceName"]?.GetValue<string>())" Required="true" />
+        <!-- #endregion -->
+
+        <!-- #region IsActive -->
+        <FormFieldSwitch Label="Active" Name="IsActive" Value="@(row["IsActive"]?.GetValue<int>())" />
+        <!-- #endregion -->
+
+      </RadzenRow>
+      <RadzenRow Gap="32">
+        <!-- #region ClassName -->
+        <FormFieldTextBox Label="Class Name" Name="ClassName" Value="@(row["ClassName"]?.GetValue<string>())"
+          Required="true" />
+        <!-- #endregion -->
+        <!-- #region MethodName -->
+        <FormFieldTextBox Label="Method Name" Name="MethodName" Value="@(row["MethodName"]?.GetValue<string>())"
+          Required="true" />
+        <!-- #endregion -->
+
+        <!-- #region Description -->
+        <FormFieldTextBox Label="Short Description" Name="ShortDescription"
+          Value="@(row["ShortDescription"]?.GetValue<string>())" Required="true" />
+        <!-- #endregion -->
+
+        <!-- #region Description -->
+        <FormFieldTextArea Label="Description" Name="Description" Value="@(row["Description"]?.GetValue<string>())"
+          Required="true" Formatter=@(value => value.ToUpper()) />
+        <!-- #endregion -->
+      </RadzenRow>
+      <RadzenRow Gap="32">
+      </RadzenRow>
+    </RadzenStack>
+      @if (controls?.Count > 0)
+      {
+        <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+        <RadzenStack Gap="8" Style="margin-top: 1rem;">
+            <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+                @Form
+            </RadzenRow>
+        </RadzenStack>
+      }
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

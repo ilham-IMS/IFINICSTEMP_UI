@@ -1,0 +1,45 @@
+<RadzenStack Gap="16">
+ 
+  <DataGrid @ref=@dataGrid ID="DynamicButtonProcessDataGrid" TItem="JsonObject" LoadData="LoadData" AllowSelected="false"
+    RowLink="@((row) => $"{ParentMenuURL}/dynamicbuttonprocess/{row["ID"]}")" @bind-Filter="filter">
+
+    <Buttons>
+      <RadzenRow Gap="8">
+        @* <RoleAccess Code="RC0002825"> *@
+         <Button ButtonStyle="ButtonStyle.Info" Icon="sync" Text="Sync" Click="OnSync" />
+        @* </RoleAccess> *@
+       </RadzenRow>
+     </Buttons>
+    <!-- #region List Data -->
+    <AdditionalFilter>
+      <RadzenRow Gap="32">
+        <!-- #region Parent -->
+        <FormFieldButtonLookup Name="ParentMenuID" Label="Menu" Target="parentLookup"
+          Value="@(filter["ParentMenuID"]?.GetValue<string>())" Text="@(filter["ParentMenuName"]?.GetValue<string>())"
+          Required="true" Title="Data Source From : IFINSYS - System Setting - Module" />
+        <!-- #endregion -->
+      </RadzenRow>
+    </AdditionalFilter>
+    <Columns>
+      <!-- #region Column Data -->
+      <DataGridColumn TItem="JsonObject" Property="ParentMenuName" Title="Menu" Width="40%" />
+      <DataGridColumn TItem="JsonObject" Property="Name" Title="Sub Menu" Width="40%" />
+      <DataGridColumn TItem="JsonObject" Property="IsActive" Title="Active" Width="20%" TextAlign="TextAlign.Center"
+        Format="YN" />
+      <!-- #endregion -->
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>
+
+<!-- #region Parent Lookup -->
+<SingleSelectLookup @ref="@parentLookup" ID="ParentMenuLookup" TItem="JsonObject" LoadData="LoadParentLookup"
+  Title="Parent List" Select="@(async (select) => {
+								filter["ParentMenuID"] = select["ID"]?.GetValue<string>();
+								filter["ParentMenuName"] = select["Name"]?.GetValue<string>();
+								await dataGrid.Reload();
+							})">
+  <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" />
+  <DataGridColumn TItem="JsonObject" Property="Name" Title="Name" />
+</SingleSelectLookup>
+<!-- #endregion -->

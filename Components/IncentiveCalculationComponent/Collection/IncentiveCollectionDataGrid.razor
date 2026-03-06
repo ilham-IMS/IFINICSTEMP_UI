@@ -1,0 +1,47 @@
+<RadzenStack>
+  <DataGrid @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false" RowLink=@(row => GetLink(row))>
+    <!-- #region Toolbar -->
+    <Buttons>
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RP0000669">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Print" Icon="Print" />
+        </RoleAccess>
+      </RadzenRow>
+    </Buttons>
+    <!-- #endregion -->
+    <!-- #region Filter -->
+    <AdditionalFilter>
+      <RadzenRow Gap="32">
+
+        <FormFieldTextBox Label="Periode From" Name="PeriodeFrom" Value="@(filter["PeriodeFrom"]?.GetValue<string>())" Size="2"
+          ValueChanged="@(async value => {
+				filter["PeriodeFrom"] = value;
+				await dataGrid.Reload();
+			})" />
+
+        <FormFieldTextBox Label="Periode To" Name="PeriodeTo" Value="@(filter["PeriodeTo"]?.GetValue<string>())" Size="2"
+          ValueChanged="@(async value => {
+				filter["PeriodeTo"] = value;
+				await dataGrid.Reload();
+			})" />
+      </RadzenRow>
+    </AdditionalFilter>
+    <!-- #endregion -->
+    <Columns>
+      <!-- #region Name -->
+      <DataGridColumn TItem="JsonObject" Property="ClientName" Title="Name" Width="35%" />
+      <!-- #endregion  -->
+
+      <!-- #region Period -->
+      <DataGridColumn TItem="JsonObject" Property="IncentivePeriode" Title="Periode" Width="30%" />
+      <!-- #endregion  -->
+
+      <!-- #region Amount -->
+      <DataGridColumn TItem="JsonObject" Property="TotalIncentiveAmount" Title="Amount" Width="35%" />
+      <!-- #endregion  -->
+
+      
+    </Columns>
+  </DataGrid>
+</RadzenStack>
+

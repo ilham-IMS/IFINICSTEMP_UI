@@ -1,0 +1,44 @@
+
+<RadzenStack Gap="16">
+  <!-- #region List Data -->
+  <DataGrid ID="MasterDashboardUserDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="true">
+    <Buttons>
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0000120">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" />
+          <Button ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" Click="@UpdateOrderKey" />
+        </RoleAccess>
+        <RoleAccess Code="RD0000052">
+          <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@Delete" Icon="delete" />
+        </RoleAccess>
+      </RadzenRow>
+      <!-- #endregion -->
+    </Buttons>
+
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="DashboardName" Title="Dashboard" Width="50%" />
+      <DataGridColumn TItem="JsonObject" Property="DashboardGrid" Title="Grid" Width="30%" />
+      <DataGridColumn TItem="JsonObject" Property="OrderKey" Title="Order No" Width="20%" TextAlign="TextAlign.Right">
+        <Template Context="row">
+          <FormFieldNumeric Value="@(row["OrderKey"]?.GetValue<int>())" />
+        </Template>
+      </DataGridColumn>
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>
+
+
+<!-- #region Lookup Add -->
+@* <MultipleSelectLookup @ref="menuDashboardLookup" ID="MasterDashboardLookup" TItem="JsonObject"
+LoadData="GetRowsForLookup" Title="Dashboard Lookup">
+<ToolbarTemplate>
+<Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@Add" Icon="add" />
+</ToolbarTemplate>
+<ColumnsTemplate>
+<DataGridColumn TItem="JsonObject" Property="Code" Title="Code" Width="25%" />
+<DataGridColumn TItem="JsonObject" Property="DashboardName" Title="Name" Width="75%" />
+</ColumnsTemplate>
+</MultipleSelectLookup> *@
+<!-- #endregion -->

@@ -1,0 +1,63 @@
+<RadzenStack Gap="8">
+  <RadzenRow Gap="32">
+    <FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())"
+      Color="@(Color.Secondary)" />
+  </RadzenRow>
+
+  <Divider />
+
+  <RadzenStack Gap="16">
+    <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+      AllowSelected="@(!IsReadOnly)" RowLink="@(row => row["Formula"] == null ? $"{ParentMenuURL}/dynamicreportsetting/{DynamicReportID}/dynamicreportparameter/{row["ID"]}" :
+        $"{ParentMenuURL}/dynamicreportsetting/{DynamicReportID}/dynamicreportparameter/formula/{row["ID"]}")">
+      <!-- #region Toolbar -->
+      <Buttons>
+
+        <RadzenRow Gap="8">
+          @if (!IsReadOnly)
+          {
+            <RoleAccess Code="RC0004879">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+            </RoleAccess>
+            <RoleAccess Code="RC0004880">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Add Formula" Icon="add" Click="@AddFormula" />
+            </RoleAccess>
+            <RoleAccess Code="RD0001260">
+            <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+            </RoleAccess>
+          }
+        </RadzenRow>
+      </Buttons>
+      <!-- #endregion -->
+
+      <!-- #region List Data -->
+      <Columns>
+        <!-- #region Order Column -->
+        <DataGridColumn TItem="JsonObject" Property="OrderKey" Title="Order" TextAlign="TextAlign.Left" Sortable="false"
+          Filterable="false" Resizable="false" Width="10%" Visible="@(!IsReadOnly)" ExcludeFromRowClick>
+          <Template Context="row">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0"
+              Style="padding: 0 0">
+              <Icon IconName="expand_circle_up" Click=@(arg => OrderUp(row)) FillOnMouseOver
+                Visible="@(row["OrderKey"]?.GetValue<int>() > 1)" Style="margin-right: auto; font-size: 1.5rem;" />
+              <Icon IconName="expand_circle_down" Click=@(arg => OrderDown(row)) FillOnMouseOver
+                Visible="@(row["OrderKey"]?.GetValue<int>() < dataGrid.Data?.Count())"
+                Style="margin-left: auto; font-size: 1.5rem;" />
+            </RadzenStack>
+          </Template>
+        </DataGridColumn>
+        <!-- #endregion -->
+
+        <DataGridColumn TItem="JsonObject" Property="Label" Title="Label" Width="25%" TextAlign="TextAlign.Left" />
+        <DataGridColumn TItem="JsonObject" Property="TableName" Title="Column / Formula" Width="50%"
+          TextAlign="TextAlign.Left"
+          Text="@(row => row["Formula"] != null ? row["Formula"]?.GetValue<string>() : $"{row["TableName"]} - {row["ColumnName"]}")" />
+        <DataGridColumn TItem="JsonObject" Property="ComponentName" Title="Component" Width="25%"
+          TextAlign="TextAlign.Center" />
+        <DataGridColumn TItem="JsonObject" Property="Operator" Title="Operator" Width="25%" TextAlign="TextAlign.Center"
+          Text="@(row => operatorDict[row["Operator"]?.GetValue<string>() ?? "NO_ITEM"]?.GetValue<string>())" />
+      </Columns>
+    </DataGrid>
+    <!-- #endregion -->
+  </RadzenStack>
+</RadzenStack>

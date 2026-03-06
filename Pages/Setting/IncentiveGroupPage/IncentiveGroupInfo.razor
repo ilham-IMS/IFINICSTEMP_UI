@@ -1,0 +1,33 @@
+@page "/{ParentMenuURL}/incentivegroup/add"
+@page "/{ParentMenuURL}/incentivegroup/{ID}"
+
+@using IFinancing360_ICS_UI.Components.PanelMenuComponent
+@using IFinancing360_ICS_UI.Components.Setting.IncentiveGroupComponent
+
+<ReleaseLock />
+
+<Title Text="Incentive Group Info" />
+
+<RoleAccess Code="RA0002368">
+  @if (ID != null)
+  {
+    <IncentiveGroupPanelMenu IncentiveGroupID=@ID>
+      <PageContainer>
+        <PageLock>
+          <IncentiveGroupForm ID="@ID" ParentMenuURL=@ParentMenuURL />
+        </PageLock>
+      </PageContainer>
+    </IncentiveGroupPanelMenu>
+  }
+  else
+  {
+    <PageContainer>
+      <IncentiveGroupForm ID="@ID" ParentMenuURL=@ParentMenuURL />
+    </PageContainer>
+  }
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

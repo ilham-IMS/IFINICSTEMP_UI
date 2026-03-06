@@ -1,0 +1,27 @@
+<RadzenStack Gap="16">
+  <!-- #region List Data -->
+  <DataGrid ID="JournalGlLinkDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false">
+    <Buttons>
+      <!-- #region Toolbar -->
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0000089">
+          <Button ButtonStyle="ButtonStyle.Info" Text="Add" Click="@Add" Icon="add" />
+        </RoleAccess>
+
+        <RadzenStack AlignItems="AlignItems.End">
+          <Button ButtonStyle="ButtonStyle.Success" Text="Print" Click="@Print" />
+        </RadzenStack>
+      </RadzenRow>
+      <!-- #endregion -->
+    </Buttons>
+
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" Width="20%" TextAlign="TextAlign.Center"
+        Link="@(row => $"{ParentMenuURL}/gllink/{row["ID"]}")" />
+      <DataGridColumn TItem="JsonObject" Property="GlLinkName" Title="Name" Width="70%" />
+      <DataGridColumn TItem="JsonObject" Property="IsActive" Title="Active" Width="10%" TextAlign="TextAlign.Center"
+        Format="YN" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>

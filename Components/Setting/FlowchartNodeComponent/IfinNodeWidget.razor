@@ -1,0 +1,18 @@
+@using Blazor.Diagrams.Components.Renderers;
+
+<div>
+   <FormFieldTextArea InputStyle="width: 300px; height: 60px;" Disabled Label="@Node.Label" Value="@Node.Value"
+      ValueChanged="@(value => Node.Value = value)" />
+
+   @foreach (var port in Node.Ports)
+   {
+      // In case you have any ports to show
+      // IMPORTANT: You are always in charge of rendering ports
+      <PortRenderer @key="port" Port="port" />
+   }
+</div>
+
+@code {
+   // This gets filled by the library
+   [Parameter] public IfinNodeModel Node { get; set; } = null!;
+}

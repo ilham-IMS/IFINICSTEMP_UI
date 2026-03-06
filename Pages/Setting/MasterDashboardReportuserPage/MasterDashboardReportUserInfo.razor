@@ -1,0 +1,43 @@
+@page "/{ParentMenuURL}/masterdashboardreportuser/add"
+@page "/{ParentMenuURL}/masterdashboardreportuser/{ID}"
+
+@using IFinancing360_ICS_UI.Components.Setting.MasterDashboardReportUserComponent
+@using IFinancing360_ICS_UI.Components.Setting.MasterDashboardUserComponent
+@using IFinancing360_ICS_UI.Components.Setting.MasterReportUserComponent
+
+<ReleaseLock />
+
+<Title Text="Master Dashboard & Report User Info" />
+
+<RoleAccess Code="RA0000057">
+  <PageContainer>
+    <PageLock When="@(ID != null)">
+      <MasterDashboardReportUserForm ID=@ID ParentMenuURL=@ParentMenuURL />
+
+      @if (ID != null)
+      {
+        <RadzenTabs>
+          <Tabs>
+            <RoleAccess Code="RA0000114">
+              <RadzenTabsItem Text="Dashboard List">
+                <MasterDashboardUserDataGrid userID=@ID ParentMenuURL=@ParentMenuURL />
+              </RadzenTabsItem>
+            </RoleAccess>
+
+            <RoleAccess Code="RA0000115">
+              <RadzenTabsItem Text="Report List">
+                <MasterReportUserDataGrid userID=@ID ParentMenuURL=@ParentMenuURL />
+              </RadzenTabsItem>
+            </RoleAccess>
+          </Tabs>
+        </RadzenTabs>
+      }
+    </PageLock>
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? UserID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

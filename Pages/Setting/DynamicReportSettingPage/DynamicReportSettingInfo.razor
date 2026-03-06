@@ -1,0 +1,29 @@
+@page "/{ParentMenuURL}/dynamicreportsetting/add"
+@page "/{ParentMenuURL}/dynamicreportsetting/{ID}"
+@using IFinancing360_ICS_UI.Components.Setting.DynamicReportComponent
+@using IFinancing360_ICS_UI.Components.PanelMenuComponent
+
+<Title Text="Dynamic Report Info" />
+<RoleAccess Code="RA0002362">
+@if (ID != null)
+{
+  <DynamicReportPanelMenu DynamicReportID=@ID>
+    <PageContainer>
+      <PageLock>
+        <DynamicReportForm ID="@ID" ParentMenuURL=@ParentMenuURL />
+      </PageLock>
+    </PageContainer>
+  </DynamicReportPanelMenu>
+}
+else
+{
+  <PageContainer>
+    <DynamicReportForm ID="@ID" ParentMenuURL=@ParentMenuURL />
+  </PageContainer>
+}
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+}

@@ -1,0 +1,20 @@
+@page "/{ParentMenuURL}/marketing/{ID}/agreement/{AgreementID}"
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing
+@using IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing.AgreementMarketingComponent
+
+<ReleaseLock />
+
+<Title Text="Agreement Info" />
+
+<RoleAccess Code="RA0002371">
+  <PageContainer>
+    <AgreementMarketingForm ParentMenuURL=@ParentMenuURL IncentiveID=@ID ID=@AgreementID />
+
+  </PageContainer>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? ParentMenuURL { get; set; }
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? AgreementID { get; set; }
+}

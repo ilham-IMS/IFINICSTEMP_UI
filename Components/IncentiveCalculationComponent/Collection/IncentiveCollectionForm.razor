@@ -1,0 +1,39 @@
+<!-- #region Form -->
+<TemplateForm >
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      @* <RoleAccess Code="RC0004894">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"
+           />
+      </RoleAccess> *@
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+     
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <!-- #region row -->
+      <RadzenRow Gap="32">
+        <!-- #region Name -->
+        <FormFieldTextBox Label="Name" Name="ClientName" Value="@(row["ClientName"]?.GetValue<string>())" Required Max="250" Disabled
+           />
+        <!-- #endregion -->
+
+        <!-- #region Period -->
+        <FormFieldTextBox Label="Period" Name="IncentivePeriode" Value="@(row["IncentivePeriode"]?.GetValue<string>())" Required Disabled/>
+        <!-- #endregion -->
+
+         <!-- #region Amount -->
+        <FormFieldNumeric Label="Amount" Name="TotalIncentiveAmount" Value="@(row["TotalIncentiveAmount"]?.GetValue<decimal>())" Required Max="250" Disabled
+           />
+        <!-- #endregion -->
+      </RadzenRow>
+      <!-- #endregion -->
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

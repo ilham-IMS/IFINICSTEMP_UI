@@ -1,0 +1,74 @@
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="8">
+    <RadzenRow Gap="8">
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+      <Locker />
+    </RadzenRow>
+      @if (rowMenu != null)
+    {
+      <RadzenRow Gap="32">
+        <!-- #region Menu Code -->
+        <FormFieldLabel Label="Menu" Name="ParentMenuName" Value="@(rowMenu["ParentMenuName"]?.GetValue<string>())" Disabled="true"
+          Color="@(Color.Secondary)" />
+        <!-- #endregion -->
+
+        <!-- #region Menu Name -->
+        <FormFieldLabel Label="Sub Menu" Name="MenuName" Value="@(rowMenu["Name"]?.GetValue<string>())" Max="50"
+          Disabled="true" Color="@(Color.Secondary)" />
+        <!-- #endregion -->
+
+        <FormFieldLabel Label="Active" Name="ParentMenuName" Value="@(rowMenu["IsActive"]?.GetValue<int>() == 1 ? "YES":"NO" )" Disabled="true"
+          Color="@(Color.Secondary)" />
+
+      </RadzenRow>
+    }
+
+    <Divider />
+    <RadzenStack Gap="16">
+      <RadzenRow Gap="8">
+      </RadzenRow>
+      <RadzenStack Gap="8">
+        <RadzenRow Gap="32">
+          <!-- #region Code -->
+          <FormFieldLabel Label="Code" Name="Code" Value="@(row["Code"]?.GetValue<string>())" Disabled="true"
+            Placeholder="Auto Generated" />
+          <!-- #endregion -->
+
+          <!-- #region Name -->
+          <FormFieldTextBox Label="Name" Name="Name" Value="@(row["Name"]?.GetValue<string>())" Max="250"
+            Required="true" Formatter="@(value => value?.ToUpper())" Disabled/>
+          <!-- #endregion -->
+
+          <!-- #region RoleAccess -->
+          <FormFieldDropdown TValue="string" Label="Access" Name="RoleAccess" Items="@roleAccess"
+            Value="@(row["RoleAccess"]?.GetValue<string>())" Required="true" Disabled />
+          <!-- #endregion -->
+        </RadzenRow>
+      </RadzenStack>
+       <RadzenStack Gap="8">
+        <RadzenRow Gap="32">
+          <!-- #region Code -->
+          <FormFieldSwitch Label="Dynamic Button Proccess" 
+            Name="IsDynamic"
+            Value="@(row["IsDynamic"]?.GetValue<int>())"
+            ValueChanged="@((value) => row["IsDynamic"] = value)"
+            Change="@ChangeDynamicStatus"
+            Disabled
+            />
+          <!-- #endregion -->
+        </RadzenRow>
+      </RadzenStack>
+    </RadzenStack>
+  </RadzenStack>
+  <br>
+    @if (controls?.Count > 0)
+    {
+            <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+            <RadzenStack Gap="8" Style="margin-top: 1rem;">
+            <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+          @Form
+          </RadzenRow>
+            </RadzenStack>
+    }
+</TemplateForm>

@@ -1,0 +1,24 @@
+<RadzenRow>
+  @if (masterDashboards.Count < 1)
+  {
+    <RadzenColumn Size="12"
+      Style="height:calc(100vh - 128px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+      <span class="material-symbols-outlined"
+        style="font-size: 120px; color: #dfdfdf; margin-bottom: 24px; text-align: center;">
+        analytics
+      </span>
+      <h4>No Dashboards Available</h4>
+      <p style="font-size: 1.15em; color: #888;">You currently have no dashboards. Please contact your administrator or
+        configure it below.</p>
+      <Button ButtonStyle="ButtonStyle.Primary" Text="Create Dashboard" Icon="dashboard_customize" Style="margin-top: 16px;" Click=@(() =>
+      {NavigationManager.NavigateTo("http://8.215.19.169:9001/systemsetting/masterdashboard");}) />
+    </RadzenColumn>
+  }
+  else
+  {
+    @foreach (var item in masterDashboards)
+    {
+      <Chart MasterDashboard=@(item) />
+    }
+  }
+</RadzenRow>

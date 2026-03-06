@@ -1,0 +1,122 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+      <RadzenRow Gap="8" Style="flex: 1 1 0;">
+        @if (!IsReadOnly)
+        {
+          <RoleAccess Code="RC0004875">
+          <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" />
+          </RoleAccess>
+          @if (ID != null)
+          {
+            <RoleAccess Code="RC0004877">
+            <Button ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Success" Text="Publish" Icon="publish"
+              Click=@ChangePublishStatus />
+            </RoleAccess>
+          }
+        }
+        @if (IsReadOnly && ID != null)
+        {
+          <RoleAccess Code="RC0004878">
+          <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Warning" Text="Unpublish" Icon="unpublished"
+            Click=@ChangePublishStatus />
+          </RoleAccess>
+        }
+        @if (ID != null)
+        {
+          <RadzenRow Gap="8">
+            @if (IsPublished)
+            {
+              <RoleAccess Code="RP0000517">
+              <Button ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Info" Text="Print" Click="@PrintHandler"
+                Icon="print" />
+              </RoleAccess>
+            }
+
+            @* <RoleAccess Code="RA0000684"> *@
+            <Button ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Success" Text="Get Query"
+              Icon="convert_to_text" Click="@GetQuery" />
+            @* </RoleAccess> *@
+
+          </RadzenRow>
+        }
+        <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Icon="arrow_back" Click="@Back" />
+
+        <MultipleRoleAccess Code=@(new string[] {"RC0004866"})>
+        <RadzenStack Gap="8" Style="margin-left: auto;">
+          <RadzenRow Gap="32">
+            <ButtonDropdown Icon="manufacturing" Text="" RightIcon="true">
+            <Items>
+              <RoleAccess Code="RC0004866">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="dynamic_form" Text="Dynamic Form Setting" 
+                  Click="@GoToSetting"/>
+              </RoleAccess>
+              <RoleAccess Code="RC0004866">
+                <ButtonDropdownItem ButtonStyle="ButtonStyle.Info" Icon="flowchart"  Text="Dynamic Process Setting"/>
+              </RoleAccess>
+            </Items>
+          </ButtonDropdown>
+          </RadzenRow>
+        </RadzenStack>
+        </MultipleRoleAccess>
+      </RadzenRow>
+
+      <Locker />
+    </RadzenStack>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Title -->
+        <FormFieldTextBox Label="Title" Name="Title" Value="@(row["Title"]?.GetValue<string>())" Max="250"
+          Required="true" Disabled="@(IsReadOnly)" Formatter=@(value => value.ToUpper()) />
+        <!-- #endregion -->
+        <!-- #region Title -->
+        <FormFieldTextArea Label="Remark" Name="Remarks" Value="@(row["Remarks"]?.GetValue<string>())" Max="4000"
+          Required="false" Disabled="@(IsReadOnly)" />
+        <!-- #endregion -->
+        <!-- #region Published -->
+        <FormFieldSwitch Label="Published" Name="IsPublished" Value="@(row["IsPublished"]?.GetValue<int>())"
+          Disabled="true" />
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->
+@if (controls?.Count > 0)
+{
+    <hr style="border: none; border-top: 2px solid var(--ifinancing-color-primary); margin: 20px 0;" />
+
+    <RadzenStack Gap="8" Style="margin-top: 1rem;">
+        <RadzenRow Gap="32" Style="margin-bottom: 5rem;">
+            @Form
+        </RadzenRow>
+    </RadzenStack>
+}
+
+<Modal @ref="@queryModal" Title="Query Statement">
+  <Template>
+    <textarea name="" id="" style="height: 70vh;" disabled>
+      @(Query["Query"]?.GetValue<string>())
+    </textarea>
+
+    @if (Query["Errors"] != null && Query["Errors"]?.AsArray().Count > 0)
+    {
+      @foreach (var error in Query["Errors"]?.AsArray() ?? [])
+      {
+        var err = error?.AsObject();
+
+        <p style="color: var(--ifinancing-color-danger);">@(err?["Message"]?.GetValue<string>())</p>
+      }
+    }
+  </Template>
+</Modal>
+
+<Modal @ref="@printModal" Title="Print Report">
+  <Template>
+    <DynamicReportPrintForm ID="@ID" CanGoBack="false" />
+  </Template>
+</Modal>

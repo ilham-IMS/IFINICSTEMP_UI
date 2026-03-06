@@ -1,0 +1,41 @@
+@page "/{ParentMenuURL}/dynamicreportsetting/{DynamicReportID}/dynamicreporttable/add"
+@page "/{ParentMenuURL}/dynamicreportsetting/{DynamicReportID}/dynamicreporttable/{ID}"
+@using IFinancing360_ICS_UI.Components.Setting.DynamicReportTableComponent
+@using IFinancing360_ICS_UI.Components.Setting.DynamicReportTableRelationComponent
+@using IFinancing360_ICS_UI.Components.PanelMenuComponent
+
+<Title Text="Dynamic Report Table Info" />
+<RoleAccess Code="RA0002364">
+<DynamicReportPanelMenu DynamicReportID=@DynamicReportID>
+  <PageContainer>
+    <PageLock When=@(ID != null)>
+
+      <DynamicReportTableForm DynamicReportID="@DynamicReportID" ID="@ID"
+        RowChanged="@(value => DynamicReportTable = value)" RowDynamicReportChanged="@(value => DynamicReport = value)"
+        ParentMenuURL=@ParentMenuURL />
+
+      @* <RoleAccess Code=""> *@
+      @* @if(DynamicReportTable?["IsTableReference"]?.GetValue<int>() == 1)
+      { *@
+        <Divider />
+        <SectionTitle Text="Table Relation" />
+        <DynamicReportTableRelationDataGrid DynamicReportID="@DynamicReportID" DynamicReportTableID="@ID"
+          MasterDynamicReportColumnID="@MasterDynamicReportColumnID" DynamicReportTable="@DynamicReportTable"
+          DynamicReport=@DynamicReport MasterDynamicReportColumn="@MasterDynamicReportColumn"
+          ParentMenuURL=@ParentMenuURL />
+      @* } *@
+      @* </RoleAccess> *@
+    </PageLock>
+  </PageContainer>
+</DynamicReportPanelMenu>
+</RoleAccess>
+
+@code {
+  [Parameter] public string? DynamicReportID { get; set; }
+  [Parameter] public string? MasterDynamicReportColumnID { get; set; }
+  [Parameter] public string? ID { get; set; }
+  [Parameter] public string? ParentMenuURL { get; set; }
+  JsonObject DynamicReportTable { get; set; } = new();
+  JsonObject MasterDynamicReportColumn { get; set; } = new();
+  JsonObject DynamicReport { get; set; } = new();
+}

@@ -1,0 +1,141 @@
+<TemplateForm Submit="@Save">
+  <RadzenStack Gap="8">
+    <RadzenRow Gap="32">
+      <FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())"
+        Color="@(Color.Secondary)" />
+    </RadzenRow>
+
+    <Divider />
+
+    <RadzenStack Gap="16">
+      <DataGrid ID="MasterDynamicReportColumnDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+        AllowSelected="@(!IsReadOnly)">
+        <!-- #region Toolbar -->
+        <Buttons>
+
+          <RadzenRow Gap="8">
+            @if (!IsReadOnly)
+            {
+              <RoleAccess Code="RC0004870">
+              <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+              </RoleAccess>
+              <RoleAccess Code="RC0004871">
+              <Button ButtonStyle="ButtonStyle.Info" Text="Add Formula" Icon="add" Click="@AddFormula" />
+              </RoleAccess>
+              <RoleAccess Code="RC0004872">
+              <Button ButtonStyle="ButtonStyle.Info" ButtonType="ButtonType.Submit" Text="Save" Icon="save" />
+              </RoleAccess>
+              <RoleAccess Code="RD0001258">
+              <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+              </RoleAccess>
+            }
+          </RadzenRow>
+        </Buttons>
+        <!-- #endregion -->
+
+        <!-- #region List Data -->
+        <Columns>
+          @* <RoleAccess Code="RC0001017"> *@
+          <DataGridColumn TItem="JsonObject" Property="OrderKey" Title="Order" Sortable="false" Filterable="false"
+            Resizable="false" Width="4.2rem" Visible="@(!IsReadOnly)" OrderIndex="0">
+            <Template Context="row">
+              <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0"
+                Style="padding: 0 0">
+                <Icon IconName="expand_circle_up" Click=@(arg => OrderUp(row)) FillOnMouseOver
+                  Visible="@(row["OrderKey"]?.GetValue<int>() > 1)" Style="margin-right: auto; font-size: 1.5rem;" />
+                <Icon IconName="expand_circle_down" Click=@(arg => OrderDown(row)) FillOnMouseOver
+                  Visible="@(row["OrderKey"]?.GetValue<int>() < dataGrid.Data?.Count())"
+                  Style="margin-left: auto; font-size: 1.5rem;" />
+              </RadzenStack>
+            </Template>
+          </DataGridColumn>
+          @* </RoleAccess> *@
+          <DataGridColumn TItem="JsonObject" Property="TableAlias" Title="Table" Width="15%"
+            TextAlign="TextAlign.Left" />
+          <DataGridColumn TItem="JsonObject" Property="ColumnName" Title="Column" Width="15%" TextAlign="TextAlign.Left"
+            Text="@(row => FormatColumnName(row))" />
+          <DataGridColumn TItem="JsonObject" Property="HeaderTitle" Title="Title" Width="45%"
+            TextAlign="TextAlign.Left">
+            <Template Context="row">
+              @if (!IsReadOnly)
+              {
+                <FormFieldTextBox Name="@($"HeaderTitle_{row["ID"]}")" Value="@(row["HeaderTitle"]?.GetValue<string>())"
+                  Required />
+              }
+              else
+              {
+                <span>@(row["HeaderTitle"]?.GetValue<string>())</span>
+              }
+            </Template>
+          </DataGridColumn>
+
+          <DataGridColumn TItem="JsonObject" Property="GroupFunction" Title="Group" Width="20%" Format="YN">
+            <Template Context="row">
+              @if (!IsReadOnly)
+              {
+                <FormFieldDropdown @key="row" TValue="string" Items=@groupFunctionDict
+                  Name="@($"GroupFunction_{row["ID"]}")" Value="@(row["GroupFunction"]?.GetValue<string>())" AllowClear />
+              }
+              else
+              {
+                <span>@(row["GroupFunction"]?.GetValue<string>())</span>
+              }
+            </Template>
+          </DataGridColumn>
+        </Columns>
+      </DataGrid>
+      <!-- #endregion -->
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+
+
+
+<MultipleSelectLookup TItem="JsonObject" ID="MasterDynamicReportColumnLookup" @ref="columnMultiLookup"
+  LoadData="LoadMasterDynamicReportColumnLookup" Title="Column List">
+  <ToolbarTemplate>
+    <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@AddToList" />
+  </ToolbarTemplate>
+
+  <ColumnsTemplate>
+    <DataGridColumn TItem="JsonObject" Property="TableName" Title="Table" />
+    <DataGridColumn TItem="JsonObject" Property="Alias" Title="Column" />
+  </ColumnsTemplate>
+</MultipleSelectLookup>
+
+
+<TemplateForm Submit="@SaveFormula">
+  <Modal @ref="@addFormulaModal" Title="Add Formula">
+    <Template>
+      <RadzenStack>
+        <RadzenRow>
+          <Button ButtonStyle="ButtonStyle.Info" ButtonType="ButtonType.Submit" Text="Save" Icon="save" />
+          <Button ButtonStyle="ButtonStyle.Info" ButtonType="ButtonType.Button" Text="Help" Click="@ShowGuide"
+            Icon="help" />
+        </RadzenRow>
+        <FormFieldTextBox Name="Formula" Value="@(row["Formula"]?.GetValue<string>())" Label="Formula" Required />
+      </RadzenStack>
+    </Template>
+  </Modal>
+</TemplateForm>
+
+<Modal @ref="@guideModal" Title="Guide">
+  <HeaderTemplate></HeaderTemplate>
+  <Template>
+    {ALIAS TABLE.NAMA_COLUMN} : Untuk mengambil data ( gunakan kurung kurawal )
+    <Divider />
+    Function
+    <ul>
+      <li>CONCAT() : Untuk menggabungkan data</li>
+      <li>UPPER() : Untuk mengubah semua karakter menjadi huruf kapital</li>
+      <li>LOWER() : Untuk mengubah semua karakter menjadi huruf kecil</li>
+      <li>TRIM() : Untuk menghapus semua spasi</li>
+      <li>LEN() : Untuk menghitung panjang karakter</li>
+      <li>LEFT() : Untuk mengambil karakter pertama</li>
+      <li>RIGHT() : Untuk mengambil karakter terakhir</li>
+      <li>REPLACE() : Untuk mengganti karakter</li>
+      <li>SUBSTRING() : Untuk memotong string</li>
+      <li>ROUND() : Untuk membulatkan bilangan</li>
+    </ul>
+  </Template>
+</Modal>

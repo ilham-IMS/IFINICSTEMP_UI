@@ -1,0 +1,45 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0000089">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"/>
+      </RoleAccess>
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Code -->
+        <FormFieldTextBox Label="Code" Name="Code" Value="@(row["Code"]?.GetValue<string>())" Max="50" Required
+          Disabled=@(ID != null) />
+        <!-- #endregion -->
+
+        <!-- #region Description -->
+        <FormFieldTextBox Label="Name" Name="GlLinkName" Value="@(row["GlLinkName"]?.GetValue<string>())"
+          Max="4000" Required />
+        <!-- #endregion -->
+
+        <!-- #region Active -->
+        <RoleAccess Code="RU0000074" >
+            <!-- Authorize jika User memiliki hak akses -- dihapus -->
+            <Authorize>
+                <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) ValueChanged=@ChangeActive  />
+            </Authorize>
+
+            <!-- NotAuthorize jika User tidak memiliki hak akses -- dihapus -->
+            <NotAuthorize>
+                <FormFieldSwitch Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) Disabled  />
+            </NotAuthorize>
+        </RoleAccess>
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

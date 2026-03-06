@@ -1,0 +1,15 @@
+<RadzenStack>
+  @* <!-- #region Toolbar -->
+  <RadzenRow Gap="8">
+  <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+  <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete"Click="@Delete" />
+  </RadzenRow>
+  <!-- #endregion --> *@
+
+  <!-- #region List Data -->
+  <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+    AllowSelected="false" RowLink="@(row => $"report/dynamicreport/{row["ID"]}")">
+    <DataGridColumn TItem="JsonObject" Property="Title" Title="Title" Width="100%" TextAlign="TextAlign.Left" />
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>

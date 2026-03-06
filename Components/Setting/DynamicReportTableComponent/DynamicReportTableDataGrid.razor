@@ -1,0 +1,38 @@
+<RadzenStack Gap="8">
+  <RadzenRow Gap="32">
+    <FormFieldLabel Label="Report Title" Name="ReportTitle" Value="@(rowDynamicReport["Title"]?.GetValue<string>())"
+      Color="@(Color.Secondary)" />
+  </RadzenRow>
+
+  <Divider />
+
+  <RadzenStack Gap="16">
+    <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+      AllowSelected="@(!IsReadOnly)"
+      RowLink="@(row => $"{ParentMenuURL}/dynamicreportsetting/{DynamicReportID}/dynamicreporttable/{row["ID"]}")">
+      <!-- #region Toolbar -->
+      <Buttons>
+
+        <RadzenRow Gap="8">
+          @if (!IsReadOnly)
+          {
+            <RoleAccess Code="RC0004883">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+            </RoleAccess>
+            <RoleAccess Code="RD0001261">
+            <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+            </RoleAccess>
+          }
+        </RadzenRow>
+      </Buttons>
+      <!-- #endregion -->
+
+      <!-- #region List Data -->
+      <Columns>
+        <DataGridColumn TItem="JsonObject" Property="TableName" Title="Table" Width="100%" TextAlign="TextAlign.Left" />
+        <DataGridColumn TItem="JsonObject" Property="Alias" Title="Alias" Width="100%" TextAlign="TextAlign.Left" />
+      </Columns>
+    </DataGrid>
+    <!-- #endregion -->
+  </RadzenStack>
+</RadzenStack>

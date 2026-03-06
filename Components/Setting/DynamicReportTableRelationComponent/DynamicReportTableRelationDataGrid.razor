@@ -1,0 +1,87 @@
+<TemplateForm Submit="@Submit">
+  <RadzenStack Gap="16">
+    <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+      AllowSelected="@(!IsReadOnly)">
+      <!-- #region Toolbar -->
+      <Buttons>
+
+        <RadzenRow Gap="8">
+          @if (!IsReadOnly)
+          {
+            <RoleAccess Code="RC0004885">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+            </RoleAccess>
+            <RoleAccess Code="RC0004886">
+            <Button ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save" ButtonType="ButtonType.Submit" />
+            </RoleAccess>
+            <RoleAccess Code="RD0001262">
+            <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" />
+            </RoleAccess>
+          }
+        </RadzenRow>
+      </Buttons>
+      <!-- #endregion -->
+
+      <!-- #region List Data -->
+      <Columns>
+        <DataGridColumn TItem="JsonObject" Property="SourceMasterDynamicReportColumnValue" Title="Column Source"
+          Width="100%" TextAlign="TextAlign.Left">
+          <Template Context="row">
+            <FormFieldButtonLookup Name="@($"SourceMasterDynamicReportColumnValue_{row["ID"]}")" Target="@columnLookup"
+              Value="@(row["SourceMasterDynamicReportColumnValue"]?.GetValue<string>())"
+              Text="@(row["SourceMasterDynamicReportColumnValue"]?.GetValue<string>())" Click="@(() => ActiveRow = row)"
+              Disabled=@(IsReadOnly) />
+          </Template>
+        </DataGridColumn>
+
+        <DataGridColumn TItem="JsonObject" Property="Operator" Title="Operator" Width="9rem"
+          TextAlign="TextAlign.Center">
+          <Template Context="row">
+            <FormFieldDropdown Items="@operatorDict" Name="@($"Operator_{row["ID"]}")"
+              Value="@(row["Operator"]?.GetValue<string>())" Required Disabled=@(IsReadOnly) />
+          </Template>
+        </DataGridColumn>
+
+        <DataGridColumn TItem="JsonObject" Property="ReferenceMasterDynamicReportColumnValue" Title="Column Reference"
+          Width="100%" TextAlign="TextAlign.Left">
+          <Template Context="row">
+            <FormFieldButtonLookup Name="@($"ReferenceMasterDynamicReportColumnValue_{row["ID"]}")"
+              Value="@(row["ReferenceMasterDynamicReportColumnValue"]?.GetValue<string>())"
+              Text="@(row["ReferenceMasterDynamicReportColumnValue"]?.GetValue<string>())" Target=@referenceColumnLookup
+              Click="@(() => ActiveRow = row)" ShowInput="true" ValueChanged="@(value => InputValueChanged(value, row))"
+              Disabled=@(IsReadOnly) />
+          </Template>
+
+        </DataGridColumn>
+
+      </Columns>
+    </DataGrid>
+    <!-- #endregion -->
+  </RadzenStack>
+</TemplateForm>
+
+@if (!IsReadOnly)
+{
+  <SingleSelectLookup TItem="JsonObject" ID="MasterDynamicReportColumnLookup" @ref="columnLookup" Title="Column"
+    LoadData="@(LoadMasterDynamicReportColumnLookup)" Select="@(SelectColumn)">
+    <DataGridColumn TItem="JsonObject" Property="Alias" Title="Name" />
+  </SingleSelectLookup>
+
+  <SingleSelectLookup TItem="JsonObject" ID="ReferenceDynamicReportTableLookup" @ref="referenceReportTableLookup"
+    Title="Table Reference" LoadData="@(LoadReferenceDynamicReportTableLookup)" Select="@(SelectReferenceTable)">
+    <DataGridColumn TItem="JsonObject" Property="Alias" Title="Table" />
+  </SingleSelectLookup>
+
+  <SingleSelectLookup TItem="JsonObject" ID="MasterDynamicReportColumnLookup" @ref="referenceColumnLookup"
+    Title="Column Reference" LoadData="@(LoadReferenceMasterDynamicReportColumnLookup)" Select="@(SelectReferenceColumn)">
+    <DataGridColumn TItem="JsonObject" Property="Alias" Title="Name" />
+  </SingleSelectLookup>
+
+  <Modal @ref="@addRelationModal">
+    <Template>
+      <CascadingValue Value="this">
+        <DynamicReportTableRelationForm DynamicReportTableID="@DynamicReportTableID" />
+      </CascadingValue>
+    </Template>
+  </Modal>
+}

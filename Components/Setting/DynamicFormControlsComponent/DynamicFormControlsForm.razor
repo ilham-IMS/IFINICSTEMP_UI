@@ -1,0 +1,88 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Parent -->
+    <RadzenStack Gap="8">
+    <Locker />
+      <RadzenRow Gap="32">
+        <!-- #region Code -->
+        <FormFieldLabel Label="Code" Value="@(rowParent["Code"]?.GetValue<string>())"Color="@(Color.Secondary)" />
+        <!-- #endregion -->
+
+        <!-- #region GroupTypeName -->
+        <FormFieldLabel Label="Description" Value="@(rowParent["Name"]?.GetValue<string>())"Color="@(Color.Secondary)" />
+        <!-- #endregion -->
+
+        <!-- #region IsActive-->
+        <FormFieldLabel Label="Active" Name="IsActive" Value="@(rowParent["IsActive"]?.GetValue<int>() == 1 ? "Yes" : "No")" Color="@(Color.Secondary)" />
+        <!-- #endregion -->
+      </RadzenRow>
+
+      <Divider />
+    </RadzenStack>
+    <!-- #endregion -->
+
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Icon="save" Text="Save" />
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="arrow_back" />
+
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <FormFieldDropdown Label="Component Type" TValue="string" Name="ComponentName" Items="@componentType"
+          Value="@(row["ComponentName"]?.GetValue<string>())" ValueChanged="@(value => row["ComponentName"]=value)"
+          Disabled="@(ID != null)" Required />
+        <FormFieldTextBox Name="Name" Label="Component ID" Value="@(row["Name"]?.GetValue<string>())"
+          Disabled="@(ID != null)" Required />
+        
+        <FormFieldTextBox Name="Label" Label="UI Label" Value="@(row["Label"]?.GetValue<string>())" Required />
+      </RadzenRow>
+      <RadzenRow Gap="32">
+      @* @if (row["ComponentName"]?.GetValue<string>() == "FormFieldNumeric")
+      {
+      <RadzenRow Gap="8">
+      <FormFieldTextBox Name="Step" Label="Step" Value="@(row["Step"]?.GetValue<string>())" />
+      </RadzenRow>
+      } *@
+        @if (row["ComponentName"]?.GetValue<string>() == "FormFieldDecimal")
+        {
+            <FormFieldDropdown Label="Numeric Format" TValue="string" Name="NumericFormat" Items="@numericType"
+              Value="@(row["NumericFormat"]?.GetValue<string>())" ValueChanged="@(value => row["NumericFormat"]=value)"
+              Disabled="@(ID != null)" Required />
+        }
+        @if (row["ComponentName"]?.GetValue<string>() != "FormFieldDatePicker" &&
+        row["ComponentName"]?.GetValue<string>() != "FormFieldSwitch")
+        {
+
+
+            <FormFieldNumeric Name="Min" Label="Min" Value="@(row["Min"]?.GetValue<int>())"
+              Visible="@(row["ComponentName"]?.GetValue<string>() != "FormFieldDropdown" && row["ComponentName"]?.GetValue<string>() != "FormFieldSwitch")" />
+
+            <FormFieldNumeric Name="Max" Label="Max" Value="@(row["Max"]?.GetValue<int>())"
+              Visible="@(row["ComponentName"]?.GetValue<string>() != "FormFieldDropdown" && row["ComponentName"]?.GetValue<string>() != "FormFieldSwitch")" />
+        }
+
+        <FormFieldNumeric Name="DisplayOrder" Label="Display Order" Value="@(row["DisplayOrder"]?.GetValue<int>())"
+          Required />
+      </RadzenRow>
+      <RadzenRow Gap="32">
+        <FormFieldSwitch Size="4" Name="Required" Label="Required" Value=@(row["Required"]?.GetValue<int>()) />
+        <FormFieldSwitch Size="4" Name="Disabled" Label="Disabled" Value=@(row["Disabled"]?.GetValue<int>()) />
+        <FormFieldSwitch Size="4" Name="IsActive" Label="Active" Value=@(row["IsActive"]?.GetValue<int>()) ValueChanged=@ChangeActive />
+        
+      </RadzenRow>
+
+      @if (row["ComponentName"]?.GetValue<string>() == "FormFieldDropdown")
+      {
+          <RadzenRow Gap="32">
+            <FormFieldTextBox Label="Value DDL" Value="@(ddlInput)" />
+          </RadzenRow>
+      }
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->

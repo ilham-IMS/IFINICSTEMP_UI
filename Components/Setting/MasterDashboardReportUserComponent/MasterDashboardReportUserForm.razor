@@ -1,0 +1,41 @@
+<!-- #region Form -->
+<TemplateForm Submit=@OnSubmit>
+  <RadzenStack Gap="16">
+    <!-- #region Toolbar -->
+    <RadzenRow Gap="8">
+      <RoleAccess Code="RC0000119">
+        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"/>
+      </RoleAccess>
+
+      <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
+
+      <Locker />
+    </RadzenRow>
+    <!-- #endregion -->
+
+    <RadzenStack Gap="8">
+      <RadzenRow Gap="32">
+        <!-- #region Employee Code -->
+        <FormFieldButtonLookup Name="EmployeeCode" Label="Employee" Target="employeeLookup"
+          Value="@(row["EmployeeCode"]?.GetValue<string>())" Text="@(row["EmployeeCode"]?.GetValue<string>())"
+          Required />
+        <!-- #endregion -->
+
+        <!-- #region Employee Name -->
+        <FormFieldTextBox Label="Employee Name" Name="EmployeeName" Value="@(row["EmployeeName"]?.GetValue<string>())"
+          Max="4000" Required Disabled />
+        <!-- #endregion -->
+      </RadzenRow>
+    </RadzenStack>
+  </RadzenStack>
+</TemplateForm>
+<!-- #endregion -->
+
+<!-- #region Employee Lookup -->
+<SingleSelectLookup ID="employeeLookup" @ref="@employeeLookup" TItem="JsonObject" LoadData="LoadEmployeeLookupExcluede"
+  Title="EmployeeMain List" Select=@((select) => { row["EmployeeCode"]=select["Code"]?.GetValue<string>();
+  row["EmployeeName"]=select["Name"]?.GetValue<string>(); row["EmployeeID"]=select["ID"]?.GetValue<string>(); })>
+  <DataGridColumn TItem="JsonObject" Property="Code" Title="Code" />
+  <DataGridColumn TItem="JsonObject" Property="Name" Title="Description" />
+</SingleSelectLookup>
+<!-- #endregion -->

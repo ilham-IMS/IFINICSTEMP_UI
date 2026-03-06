@@ -1,0 +1,15 @@
+<RadzenRow Gap="32">
+	<!-- #region Type -->
+	<FormFieldLabel Label="Type" Name="IncentiveType"
+		Value=@(row["IncentiveType"]?.GetValue<string>()) Color="(Color.Secondary)" />
+	<!-- #endregion -->
+
+	<!-- #region Description   -->
+	<FormFieldLabel Label="Description" Name="GroupDescription"
+		Value=@(row["GroupDescription"]?.GetValue<string>()) Color="(Color.Secondary)" />
+	<!-- #endregion -->
+
+	<!-- #region ScoringGrade Lookup -->
+	<FormFieldLabel Label="Active" Name="IsActive" Value=@(row["IsActive"]?.GetValue<int>() == 1 ? "Yes" : "No") Color="(Color.Secondary)" />
+	<!-- #endregion -->
+</RadzenRow>

@@ -1,0 +1,31 @@
+<RadzenStack Gap="16">
+  <DataGrid ID="MasterDynamicReportTableDataGrid" @ref=@dataGrid TItem="JsonObject" LoadData="LoadData"
+    AllowSelected="false" RowLink="@(row => $"{ParentMenuURL}/dynamicreportsetting/{row["ID"]}")">
+    <!-- #region Toolbar -->
+    <Buttons>
+
+      <RadzenRow Gap="8">
+        <RoleAccess Code="RC0004874">
+        <Button ButtonStyle="ButtonStyle.Info" Text="Add" Icon="add" Click="@Add" />
+        </RoleAccess>
+        @* <RoleAccess Code="RD0000420"> *@
+        @* <Button ButtonStyle="ButtonStyle.Danger" Text="Delete" Icon="delete" Click="@Delete" /> *@
+        @* </RoleAccess> *@
+        @* <ButtonDropdown Text="Action">
+        <Items>
+        <ButtonDropdownItem Text="Export to Excel " Click="@Print" />
+        </Items>
+        </ButtonDropdown> *@
+      </RadzenRow>
+    </Buttons>
+    <!-- #endregion -->
+
+    <!-- #region List Data -->
+    <Columns>
+      <DataGridColumn TItem="JsonObject" Property="Title" Title="Title" Width="40%" TextAlign="TextAlign.Left" />
+      <DataGridColumn TItem="JsonObject" Property="Remarks" Title="Remark" Width="40%" />
+      <DataGridColumn TItem="JsonObject" Property="IsPublished" Title="Published" Width="20%" Format="YN" />
+    </Columns>
+  </DataGrid>
+  <!-- #endregion -->
+</RadzenStack>
