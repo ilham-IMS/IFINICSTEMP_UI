@@ -19,7 +19,7 @@
     <!-- #endregion -->
     <AgreementMarketingInfoForm ID=@ID IncentiveID=@IncentiveID />
     <Divider />
-    <AgreementMarketingFeeDataGrid ID=@ID />
+    <AgreementMarketingFeeDataGrid ID=@ID AgreementID=@(row["AgreementID"]?.GetValue<string>()) />
     <Divider />
     <AgreementMarketingCommissionDataGrid ID=@ID />
     <Divider />

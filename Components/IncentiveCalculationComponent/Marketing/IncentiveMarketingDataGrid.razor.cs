@@ -41,8 +41,8 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
         args.Keyword,
         args.Offset,
         args.Limit,
-        FromDate = filter["PeriodeFrom"]?.GetValue<string>(),
-        ToDate = filter["PeriodeTo"]?.GetValue<string>(),
+        PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
+        PeriodeTo = filter["PeriodeTo"]?.GetValue<string>(),
       });
       return res?.Data;
     }
@@ -79,7 +79,11 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
             var result2 = await IFINICSClient.GetRow(
                 "IncentiveMarketing",
                 "GetHTMLPreview", 
-                new { ID = id }
+                new { 
+                  ID = id, 
+                  PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(), 
+                  PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
+                  }
             );
             
             string html = result2?.Data["HTML"]?.GetValue<string>() ?? "<p>Default screen</p>";
@@ -118,7 +122,9 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
                     new
                     {
                         ID = id,
-                        mimeType = mimeType
+                        mimeType = mimeType,
+                        PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
+                        PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
                     });
 
                 if (result2?.Data != null)

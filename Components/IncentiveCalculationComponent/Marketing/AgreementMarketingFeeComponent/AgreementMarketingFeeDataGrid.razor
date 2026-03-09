@@ -6,15 +6,19 @@
     <!-- #region List Data -->
     <DataGrid @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false">
       <!-- #region Type -->
-      <DataGridColumn TItem="JsonObject" Property="Fee" Title="Fee" Width="20%" />
+      <DataGridColumn TItem="JsonObject" Property="FeeName" Title="Fee" Width="20%" />
       <!-- #Endregion -->
 
       <!-- #region Client -->
-      <DataGridColumn TItem="JsonObject" Property="FeeRate" Title="Fee Rate" Width="30%" />
+      <DataGridColumn TItem="JsonObject" Property="FeeRate" Title="Fee Rate" Width="30%" >
+        <Template Context="Row">
+          @($"{Row["FeeRate"]?.GetValue<decimal>() * 100:N0}%")
+        </Template>
+      </DataGridColumn>
       <!-- #Endregion -->
 
       <!-- #region Type -->
-      <DataGridColumn TItem="JsonObject" Property="FeeAmount" Title="Fee Amount" Width="50%" />
+      <DataGridColumn TItem="JsonObject" Property="FeeAmount" Title="Fee Amount" Width="50%" Format="N2"/>
       <!-- #Endregion -->
 
     </DataGrid>

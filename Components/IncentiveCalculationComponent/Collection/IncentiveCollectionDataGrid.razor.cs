@@ -41,8 +41,8 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
         args.Keyword,
         args.Offset,
         args.Limit,
-        FromDate = filter["PeriodeFrom"]?.GetValue<string>(),
-        ToDate = filter["PeriodeTo"]?.GetValue<string>(),
+        PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
+        PeriodeTo = filter["PeriodeTo"]?.GetValue<string>(),
       });
       return res?.Data;
     }
@@ -55,5 +55,92 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
       
     }
 
+    #region GetHTMLPreview
+    private async Task<string> GetHTMLPreview()
+    {
+        var ids = dataGrid.Data
+            .Select(row => row["ID"]?.GetValue<string>())
+            .Where(id => !string.IsNullOrEmpty(id))
+            .ToList();
+
+        if (!ids.Any())
+        {
+            await NoDataSelectedAlert();
+            return "";
+        }
+
+        bool? result = await Confirm();
+        if (result == true)
+        {
+            Loading.Show();
+
+            var id = ids.FirstOrDefault();
+            
+            var result2 = await IFINICSClient.GetRow(
+                "IncentiveCollection",
+                "GetHTMLPreview", 
+                new { 
+                  ID = id, 
+                  PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(), 
+                  PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
+                  }
+            );
+            
+            string html = result2?.Data["HTML"]?.GetValue<string>() ?? "<p>Default screen</p>";
+            Loading.Close();
+
+            return html;
+        }
+        return "";
+    }
+    #endregion
+
+    #region PrintDocument
+    private async Task PrintDocument(string mimeType)
+    {
+        var ids = dataGrid.Data
+            .Select(row => row["ID"]?.GetValue<string>())
+            .Where(id => !string.IsNullOrEmpty(id))
+            .ToList();
+
+        if (!ids.Any())
+        {
+            await NoDataSelectedAlert();
+            return;
+        }
+
+        bool? result = await Confirm();
+        if (result == true)
+        {
+            Loading.Show();
+            
+            foreach (var id in ids)
+            {
+                var result2 = await IFINICSClient.GetRow(
+                    "IncentiveCollection",
+                    "PrintDocument",
+                    new
+                    {
+                        ID = id,
+                        mimeType = mimeType,
+                        PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
+                        PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
+                    });
+
+                if (result2?.Data != null)
+                {
+                    var data = result2.Data;
+                    var Content = data["Content"]?.GetValueAsByteArray();
+                    var FileName = data["Name"]?.GetValue<string>();
+                    var MimeType = data["MimeType"]?.GetValue<string>();
+
+                    PreviewFile(Content, FileName, MimeType);
+                }
+            }
+            
+            Loading.Close();
+        }
+    }
+    #endregion
   }
 }

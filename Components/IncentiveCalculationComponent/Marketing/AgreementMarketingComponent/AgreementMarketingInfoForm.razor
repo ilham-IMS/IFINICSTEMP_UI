@@ -11,7 +11,7 @@
   <!-- #region Date & Finance Info -->
   <RadzenRow Gap="32">
     <FormFieldDatePicker Label="Disbursement Date" Name="DisbursementDate" Value="@(row["DisbursementDate"]?.GetValue<DateTime>())" Required Disabled />
-    <FormFieldTextBox Label="Period" Name="IncentivePeriode" Value="@(row["IncentivePeriode"]?.GetValue<string>())" Required Disabled />
+    <FormFieldNumeric Label="Period" Name="IncentivePeriod" Value="@(row["IncentivePeriod"]?.GetValue<int>())" Required Disabled />
     <FormFieldTextBox Label="Payment Method" Name="PaymentMethod" Value="@(row["PaymentMethod"]?.GetValue<string>())" Disabled />
   </RadzenRow>
   <!-- #endregion -->
@@ -19,24 +19,24 @@
   <!-- #region Currency & Rates -->
   <RadzenRow Gap="32">
     <FormFieldTextBox Label="Currency" Name="CurrencyCode" Value="@(row["CurrencyCode"]?.GetValue<string>())" Disabled />
-    <FormFieldNumeric Label="Net Finance" Name="NetFinance" Value="@(row["NetFinance"]?.GetValue<decimal>())" Disabled />
-    <FormFieldNumeric Label="Interest Rate" Name="InterestRate" Value="@(row["InterestRate"]?.GetValue<decimal>())" Disabled />
+    <FormFieldNumeric Label="Net Finance" Name="NetFinance" Value="@(row["NetFinance"]?.GetValue<decimal>())" Format="N2" Disabled />
+    <FormFieldNumeric Label="Interest Rate" Name="InterestRate" Value="@(row["InterestRate"]?.GetValue<decimal>())" Format="N2" Disabled />
   </RadzenRow>
   <!-- #endregion -->
 
   <!-- #region Cost & Amounts -->
   <RadzenRow Gap="32">
-    <FormFieldNumeric Label="Cost Rate" Name="CostRate" Value="@(row["CostRate"]?.GetValue<decimal>())" Disabled />
-    <FormFieldNumeric Label="Interest Margin" Name="InterestMargin" Value="@(row["InterestMargin"]?.GetValue<decimal>())" Disabled />
+    <FormFieldNumeric Label="Cost Rate" Name="CostRate" Value="@(row["CostRate"]?.GetValue<decimal>())" Disabled Format="N2"/>
+    <FormFieldNumeric Label="Interest Margin" Name="InterestMargin" Value="@(row["InterestMargin"]?.GetValue<decimal>())" Disabled Format="N2"/>
     <FormFieldNumeric Label="Insurance Rate (Year 1 / Total Premium)" Name="InsuranceRate" Value="@(row["InsuranceRate"]?.GetValue<decimal>())" Disabled />
   </RadzenRow>
   <!-- #endregion -->
 
   <!-- #region Interest & Cost Amounts -->
   <RadzenRow Gap="32">
-    <FormFieldNumeric Label="Interest Amount" Name="InterestAmount" Value="@(row["InterestAmount"]?.GetValue<decimal>())" Required Disabled />
-    <FormFieldNumeric Label="Cost Amount" Name="CostAmount" Value="@(row["CostAmount"]?.GetValue<decimal>())" Required Disabled />
-    <FormFieldNumeric Label="Interest Margin Amount" Name="InterestMarginAmount" Value="@(row["InterestMarginAmount"]?.GetValue<decimal>())" Disabled />
+    <FormFieldNumeric Label="Interest Amount" Name="InterestAmount" Value="@(row["InterestAmount"]?.GetValue<decimal>())" Required Disabled Format="N2"/>
+    <FormFieldNumeric Label="Cost Amount" Name="CostAmount" Value="@(row["CostAmount"]?.GetValue<decimal>())" Required Disabled Format="N2"/>
+    <FormFieldNumeric Label="Interest Margin Amount" Name="InterestMarginAmount" Value="@(row["InterestMarginAmount"]?.GetValue<decimal>())" Disabled Format="N2"/>
   </RadzenRow>
   <!-- #endregion -->
   

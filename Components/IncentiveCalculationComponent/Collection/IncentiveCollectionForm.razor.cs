@@ -103,7 +103,69 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
     }
     #endregion
 
+    #region GetHTMLPreview
+    private async Task<string> GetHTMLPreview()
+    {
 
+        bool? result = await Confirm();
+        if (result == true)
+        {
+          Loading.Show();
+
+        
+          
+          var result2 = await IFINICSClient.GetRow(
+              "IncentiveCollection",
+              "GetHTMLPreview", 
+              new { 
+                ID = row["ID"]?.GetValue<string>(),
+                }
+          );
+          
+          string html = result2?.Data["HTML"]?.GetValue<string>() ?? "<p>Default screen</p>";
+          Loading.Close();
+
+          return html;
+        }
+        return "";
+    }
+    #endregion
+
+    #region PrintDocument
+    private async Task PrintDocument(string mimeType)
+    {
+        
+
+        bool? result = await Confirm();
+        if (result == true)
+        {
+            Loading.Show();
+            
+        
+            var result2 = await IFINICSClient.GetRow(
+                "IncentiveCollection",
+                "PrintDocument",
+                new
+                {
+                    ID = row["ID"]?.GetValue<string>(),
+                    mimeType = mimeType,
+                });
+
+            if (result2?.Data != null)
+            {
+                var data = result2.Data;
+                var Content = data["Content"]?.GetValueAsByteArray();
+                var FileName = data["Name"]?.GetValue<string>();
+                var MimeType = data["MimeType"]?.GetValue<string>();
+
+                PreviewFile(Content, FileName, MimeType);
+            }
+            
+            
+            Loading.Close();
+        }
+    }
+    #endregion
   
   }
 }

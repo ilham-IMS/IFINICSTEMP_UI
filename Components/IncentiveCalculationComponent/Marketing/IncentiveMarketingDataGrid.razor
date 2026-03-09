@@ -4,7 +4,7 @@
     <Buttons>
       <RadzenRow Gap="8">
         <RoleAccess Code="RP0000669">
-          <ButtonPreview ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Info" Text="Print Invoice" 
+          <ButtonPreview ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Info" Text="Print" 
                 Icon="print" VisibleExcelDataOnly="false" VisiblePDF="false" VisibleDocx="false" Template="@GetHTMLPreview" PrintAs=@PrintDocument/>
         </RoleAccess>
       </RadzenRow>
@@ -38,7 +38,7 @@
       <!-- #endregion  -->
 
       <!-- #region Amount -->
-      <DataGridColumn TItem="JsonObject" Property="TotalIncentiveAmount" Title="Amount" Width="35%" />
+      <DataGridColumn TItem="JsonObject" Property="TotalIncentiveAmount" Title="Amount" Width="35%" Format="N2"/>
       <!-- #endregion  -->
 
       

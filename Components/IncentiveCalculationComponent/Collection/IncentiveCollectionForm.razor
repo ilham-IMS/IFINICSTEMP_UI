@@ -3,14 +3,13 @@
   <RadzenStack Gap="16">
     <!-- #region Toolbar -->
     <RadzenRow Gap="8">
-      @* <RoleAccess Code="RC0004894">
-        <Button ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Info" Text="Save" Icon="save"
-           />
-      </RoleAccess> *@
+      <RoleAccess Code="RP0000670">
+        <ButtonPreview ButtonType="ButtonType.Button" ButtonStyle="ButtonStyle.Info" Text="Print" 
+              Icon="print" VisibleExcelDataOnly="false" VisiblePDF="false" VisibleDocx="false" Template="@GetHTMLPreview" PrintAs=@PrintDocument/>
+      </RoleAccess>
 
       <Button ButtonStyle="ButtonStyle.Danger" Text="Back" Click="Back" Icon="keyboard_backspace" />
 
-     
       <Locker />
     </RadzenRow>
     <!-- #endregion -->
@@ -24,7 +23,7 @@
         <!-- #endregion -->
 
         <!-- #region Period -->
-        <FormFieldTextBox Label="Period" Name="IncentivePeriode" Value="@(row["IncentivePeriode"]?.GetValue<string>())" Required Disabled/>
+        <FormFieldTextBox Label="Periode" Name="IncentivePeriode" Value="@(row["IncentivePeriode"]?.GetValue<string>())" Required Disabled/>
         <!-- #endregion -->
 
          <!-- #region Amount -->

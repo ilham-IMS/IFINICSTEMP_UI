@@ -1,95 +1,84 @@
 <RadzenStack>
-  <DataGrid @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="true" >
+  <DataGrid @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" >
     
     <Columns>
       <!-- #region Agreement No -->
-      <DataGridColumn TItem="JsonObject" Property="AgreementNo" Title="Agreement No" Width="35%" >
-        <Template Context="row">
-          @(row["AgreementNo"]?.GetValue<string>())
-          <br />
-          @(row["ClientName"]?.GetValue<string>())
-        </Template>
+      <DataGridColumn TItem="JsonObject" Property="AgreementNo" Title="Agreement No" Width="35%" />
+      <!-- #endregion  -->
+
+     <!-- #region Installment No -->
+      <DataGridColumn TItem="JsonObject" Property="InstallmentNo" Title="Installment No" Width="35%" />
+      <!-- #endregion  -->
+
+       <!-- #region Unpaid Amount -->
+      <DataGridColumn TItem="JsonObject" Property="UnpaidAmount" Title="Unpaid Amount" Width="35%" Format="N2">
+        <FooterTemplate >
+          @if (data != null)
+          {
+            <b>@data.Sum(x => x["UnpaidAmount"]?.GetValue<decimal>() ?? 0).ToString("N2")</b>
+          }
+        </FooterTemplate>
       </DataGridColumn>
       <!-- #endregion  -->
 
-      <!-- #region Approved Date -->
-      <DataGridColumn TItem="JsonObject" Property="ApprovedDate" Title="Approved Date" Width="30%" />
+       <!-- #region Unpaid Date -->
+      <DataGridColumn TItem="JsonObject" Property="UnpaidDate" Title="Unpaid Date" Width="35%" />
       <!-- #endregion  -->
 
-      <!-- #region Disbursement Date -->
-      <DataGridColumn TItem="JsonObject" Property="DisbursementDate" Title="Disbursement Date" Width="35%" />
+       <!-- #region Starting Date Handling -->
+      <DataGridColumn TItem="JsonObject" Property="StartingDateHandling" Title="Starting Date Handling" Width="35%" />
       <!-- #endregion  -->
 
-      <!-- #region Period -->
-      <DataGridColumn TItem="JsonObject" Property="IncentivePeriod" Title="Period" Width="35%" TextAlign="TextAlign.Center"/>
+       <!-- #region Deadline Date Handling -->
+      <DataGridColumn TItem="JsonObject" Property="DeadlineDateHandling" Title="Deadline Date Handling" Width="35%" />
       <!-- #endregion  -->
 
-      <!-- #region Payment Method -->
-      <DataGridColumn TItem="JsonObject" Property="PaymentMethod" Title="Payment Method" Width="35%" />
+       <!-- #region Result -->
+      <DataGridColumn TItem="JsonObject" Property="IncentiveResult" Title="Incentive Result" Width="35%" />
       <!-- #endregion  -->
 
-      <!-- #region Currency -->
-      <DataGridColumn TItem="JsonObject" Property="CurrencyDesc" Title="Currency" Width="35%" />
-      <!-- #endregion  -->
-
-      <!-- #region Net Finance -->
-      <DataGridColumn TItem="JsonObject" Property="NetFinance" Title="Net Finance" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Interest Rate -->
-      <DataGridColumn TItem="JsonObject" Property="InterestRate" Title="Interest Rate" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Cost Rate -->
-      <DataGridColumn TItem="JsonObject" Property="CostRate" Title="Cost Rate" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Interest Margin -->
-      <DataGridColumn TItem="JsonObject" Property="InterestMargin" Title="Interest Margin" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region BPE Ratio -->
-      <DataGridColumn TItem="JsonObject" Property="BPERatio" Title="BPE Ratio" Width="35%" >
-        <Template Context="row">
-          @(Math.Round(row["BPERatio"]?.GetValue<decimal>() * 100 ?? 0, 1) + " %")
-        </Template>
+       <!-- #region Collected Amount -->
+      <DataGridColumn TItem="JsonObject" Property="CollectedAmount" Title="Collected Amount" Width="35%" Format="N2">
+        <FooterTemplate >
+          @if (data != null)
+          {
+            <b>@data.Sum(x => x["CollectedAmount"]?.GetValue<decimal>() ?? 0).ToString("N2")</b>
+          }
+        </FooterTemplate>
       </DataGridColumn>
       <!-- #endregion  -->
 
-      <!-- #region Insurance Premium Usage Ratio -->
-      <DataGridColumn TItem="JsonObject" Property="InsurancePremiumUsageRatio" Title="Insurance Premium Usage Ratio" Width="35%" >
-        <Template Context="row">
-          @(Math.Round(row["InsurancePremiumUsageRatio"]?.GetValue<decimal>() * 100 ?? 0, 0) + " %")
-        </Template>
+       <!-- #region Collected Pct -->
+      <DataGridColumn TItem="JsonObject" Property="CollectedPct" Title="Collected Pct" Width="35%" >
+          <Template Context="row" >
+              @if (row["CollectedPct"] != null)
+              {
+                  <span>@($"{row["CollectedPct"].GetValue<decimal>() * 100:N0}%")</span>
+              }
+          </Template>
       </DataGridColumn>
       <!-- #endregion  -->
 
-      <!-- #region BPE Effect -->
-      <DataGridColumn TItem="JsonObject" Property="BPEEffect" Title="BPE Effect" Width="35%" >
-        <Template Context="row">
-          @(Math.Round(row["BPEEffect"]?.GetValue<decimal>() * 100 ?? 0, 2) + " %")
-        </Template>
+      <!-- #region Incentive Pct -->
+      <DataGridColumn TItem="JsonObject" Property="IncentivePct" Title="Incentive Pct" Width="35%" >
+          <Template Context="row" >
+              @if (row["IncentivePct"] != null)
+              {
+                  <span>@($"{row["IncentivePct"].GetValue<decimal>() * 100:N0}%")</span>
+              }
+          </Template>
       </DataGridColumn>
       <!-- #endregion  -->
 
-      <!-- #region BPE Income -->
-      <DataGridColumn TItem="JsonObject" Property="BPEIncomeIncentiveAmount" Title="BPE Income / (Expense)" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Non Interest Effect -->
-      <DataGridColumn TItem="JsonObject" Property="NonInterestEffect" Title="Non Interest Effect" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Interest Margin / Profit Before Marketing Incentive -->
-      <DataGridColumn TItem="JsonObject" Property="InterestMarginProfitBeforeMarketingIncentive" Title="Interest Margin / Profit Before Marketing Incentive" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Marketing Incentive Ratio / Incentive Amount -->
-      <DataGridColumn TItem="JsonObject" Property="MarketingIncentiveRatioIncentiveAmount" Title="Marketing Incentive Ratio / Incentive Amount" Width="35%" Format="N2"/>
-      <!-- #endregion  -->
-
-      <!-- #region Marketing Incentive Ratio / Finance Amount -->
-      <DataGridColumn TItem="JsonObject" Property="MarketingIncentiveRatioFinanceAmount" Title="Marketing Incentive Ratio / Finance Amount" Width="35%" Format="N2"/>
+      <!-- #region Incentive Amount -->
+      <DataGridColumn TItem="JsonObject" Property="IncentiveAmount" Title="Incentive Amount" Width="35%" Format="N2" >
+        <FooterTemplate >
+          @if (data != null)
+          {
+            <b>@data.Sum(x => x["IncentiveAmount"]?.GetValue<decimal>() ?? 0).ToString("N2")</b>
+          }
+        </FooterTemplate>
+      </DataGridColumn>
       <!-- #endregion  -->
     </Columns>
   </DataGrid>

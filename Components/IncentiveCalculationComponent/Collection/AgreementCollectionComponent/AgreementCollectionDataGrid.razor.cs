@@ -18,6 +18,8 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
     DataGrid<JsonObject> dataGrid = null!;
     [Parameter, EditorRequired] public string? ID { get; set; }
     [Parameter] public string? ParentMenuURL { get; set; }
+    IEnumerable<JsonObject> data;
+
     #endregion
 
     #region Field
@@ -40,6 +42,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
         args.Offset,
         args.Limit
       });
+      data = res?.Data ?? new List<JsonObject>();
       return res?.Data;
     }
     #endregion
