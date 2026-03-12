@@ -6,15 +6,24 @@
     <!-- #region List Data -->
     <DataGrid @ref=@dataGrid TItem="JsonObject" LoadData="LoadData" AllowSelected="false">
       <!-- #region Type -->
-      <DataGridColumn TItem="JsonObject" Property="IntroducerName" Title="Introducer Name" Width="50%" />
+      <DataGridColumn TItem="JsonObject" Property="VendorName" Title="Introducer Name" Width="50%"> 
+        <Template Context="data">
+          @(data["VendorName"]?.GetValue<string>() != null ? data["VendorName"]?.GetValue<string>() : data["AgentName"]?.GetValue<string>())
+        </Template>
+      </DataGridColumn>
       <!-- #Endregion -->
 
       <!-- #region Client -->
-      <DataGridColumn TItem="JsonObject" Property="Rate" Title="Rate" Width="20%" />
+      <DataGridColumn TItem="JsonObject" Property="RefundRate" Title="Rate" Width="20%" TextAlign="TextAlign.Right">
+      
+        <Template Context="data">
+          @((data["RefundRate"]?.GetValue<decimal>())?.ToString("N2") + "%")
+        </Template>
+      </DataGridColumn>
       <!-- #Endregion -->
 
       <!-- #region Type -->
-      <DataGridColumn TItem="JsonObject" Property="Amount" Title="Amount" Width="30%" />
+      <DataGridColumn TItem="JsonObject" Property="RefundAmount" Title="Amount" Width="30%" TextAlign="TextAlign.Right" Format="N2"/>
       <!-- #Endregion -->
 
     </DataGrid>

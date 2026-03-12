@@ -195,6 +195,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveGroupCriteriaComponen
         await dataGrid.Reload();
       }
       
+      await dataGrid.Reload();
       Loading.Close();
       StateHasChanged();
     }

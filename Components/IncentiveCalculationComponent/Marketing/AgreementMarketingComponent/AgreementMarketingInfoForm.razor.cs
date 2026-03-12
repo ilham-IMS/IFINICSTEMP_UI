@@ -45,7 +45,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
     public async Task GetRow()
     {
       Loading.Show();
-      var res = await IFINICSClient.GetRow<JsonObject>("AgreementMarketing", "GetRowByID", new
+      var res = await IFINICSClient.GetRow<JsonObject>("AgreementIncentiveMarketing", "GetRowByID", new
       {
         ID = ID
       });
@@ -72,7 +72,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
       #region Insert
       if (ID == null)
       {
-        var res = await IFINICSClient.Post("AgreementMarketing", "Insert", data);
+        var res = await IFINICSClient.Post("AgreementIncentiveMarketing", "Insert", data);
 
         if (res?.Data != null)
         {
@@ -84,7 +84,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
       #region Update
       else
       {
-        var res = await IFINICSClient.Put("AgreementMarketing", "UpdateByID", data);
+        var res = await IFINICSClient.Put("AgreementIncentiveMarketing", "UpdateByID", data);
         if (res?.Data != null)
         {
           await GetRow();

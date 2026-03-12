@@ -19,11 +19,26 @@
     <!-- #endregion -->
     <AgreementMarketingInfoForm ID=@ID IncentiveID=@IncentiveID />
     <Divider />
-    <AgreementMarketingFeeDataGrid ID=@ID AgreementID=@(row["AgreementID"]?.GetValue<string>()) />
+    <RadzenStack Gap="32" Style="display:flex !important; flex-direction:row !important; justify-content:space-between !important;">
+      <RadzenRow Gap="32">
+        <AgreementMarketingCommissionDataGrid ID=@ID AgreementID=@(row["ID"]?.GetValue<string>()) />
+      </RadzenRow>
+      
+      <RadzenRow Gap="32" Style="border-left:1px solid #ccc !important; padding-left:32px !important;">
+        <AgreementMarketingReferralDataGrid ID=@ID AgreementID=@(row["ID"]?.GetValue<string>()) />
+      </RadzenRow>
+    </RadzenStack>
     <Divider />
-    <AgreementMarketingCommissionDataGrid ID=@ID />
-    <Divider />
-    <AgreementMarketingReferralDataGrid ID=@ID />
+    <RadzenStack Gap="32" Style="display:flex !important; flex-direction:row !important; justify-content:space-between !important;">
+      <RadzenRow Gap="32">
+        <AgreementMarketingFeeDataGrid ID=@ID AgreementID=@(row["ID"]?.GetValue<string>()) />
+      </RadzenRow>
+      
+      <RadzenRow Gap="32" Style="border-left:1px solid #ccc !important; padding-left:32px !important;">
+        <AgreementMarketingFeeNonInternalDataGrid ID=@ID AgreementID=@(row["ID"]?.GetValue<string>()) />
+      </RadzenRow>
+    </RadzenStack>
+    @* <AgreementMarketingFeeDataGrid ID=@ID AgreementID=@(row["ID"]?.GetValue<string>()) /> *@
     <Divider />
     <AgreementMarketingRateForm ID=@ID IncentiveID=@IncentiveID />
     

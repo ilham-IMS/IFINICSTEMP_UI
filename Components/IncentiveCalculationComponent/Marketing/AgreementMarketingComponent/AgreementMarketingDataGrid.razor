@@ -73,7 +73,7 @@
       <!-- #region Insurance Premium Usage Ratio -->
       <DataGridColumn TItem="JsonObject" Property="InsurancePremiumUsageRatio" Title="Insurance Premium Usage Ratio" Width="35%" >
         <Template Context="row">
-          @(Math.Round(row["InsurancePremiumUsageRatio"]?.GetValue<decimal>() * 100 ?? 0, 0) + " %")
+          @(Math.Round(row["InsurancePremiumUsageRatio"]?.GetValue<decimal>() ?? 0, 2) + " %")
         </Template>
       </DataGridColumn>
       <!-- #endregion  -->
@@ -95,15 +95,15 @@
       <!-- #endregion  -->
 
       <!-- #region Interest Margin / Profit Before Marketing Incentive -->
-      <DataGridColumn TItem="JsonObject" Property="InterestMarginProfitBeforeMarketingIncentive" Title="Interest Margin / Profit Before Marketing Incentive" Width="35%" Format="N2"/>
+      <DataGridColumn TItem="JsonObject" Property="ProfitBeforeMarketingIncentive" Title="Interest Margin / Profit Before Marketing Incentive" Width="35%" Format="N2"/>
       <!-- #endregion  -->
 
       <!-- #region Marketing Incentive Ratio / Incentive Amount -->
-      <DataGridColumn TItem="JsonObject" Property="MarketingIncentiveRatioIncentiveAmount" Title="Marketing Incentive Ratio / Incentive Amount" Width="35%" Format="N2"/>
+      <DataGridColumn TItem="JsonObject" Property="MarketingIncentiveRatio" Title="Marketing Incentive Ratio / Incentive Amount" Width="35%" Format="N2"/>
       <!-- #endregion  -->
 
       <!-- #region Marketing Incentive Ratio / Finance Amount -->
-      <DataGridColumn TItem="JsonObject" Property="MarketingIncentiveRatioFinanceAmount" Title="Marketing Incentive Ratio / Finance Amount" Width="35%" Format="N2"/>
+      <DataGridColumn TItem="JsonObject" Property="NetInterestMarginAfterCost" Title="Marketing Incentive Ratio / Finance Amount" Width="35%" Format="N2"/>
       <!-- #endregion  -->
     </Columns>
   </DataGrid>

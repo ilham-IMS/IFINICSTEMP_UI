@@ -34,11 +34,12 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
     #region LoadData
     protected async Task<List<JsonObject>?> LoadData(DataGridLoadArgs args)
     {
-      BodyResponse<List<JsonObject>>? res = await IFINICSClient.GetRows<JsonObject>("AgreementMarketing", "GetRows", new
+      BodyResponse<List<JsonObject>>? res = await IFINICSClient.GetRows<JsonObject>("AgreementIncentiveMarketing", "GetRowsByIncentiveID", new
       {
         args.Keyword,
         args.Offset,
-        args.Limit
+        args.Limit,
+        incentiveID = ID
       });
       return res?.Data;
     }
@@ -65,7 +66,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
         var row = selectedData.First();
         var ID = row["ID"]?.GetValue<string>();
         
-        var result = await IFINICSClient.GetFileAsync("AgreementMarketing", "GetHTMLPreview", new { ID = ID });
+        var result = await IFINICSClient.GetFileAsync("AgreementIncentiveMarketing", "GetHTMLPreview", new { ID = ID });
         
         return result?.Content ?? Array.Empty<byte>();
     }

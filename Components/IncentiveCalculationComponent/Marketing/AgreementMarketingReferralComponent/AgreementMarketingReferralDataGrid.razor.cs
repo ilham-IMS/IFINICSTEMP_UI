@@ -17,6 +17,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
     #region Component Field
     DataGrid<JsonObject> dataGrid = null!;
     [Parameter, EditorRequired] public string? ID { get; set; }
+    [Parameter, EditorRequired] public string? AgreementID { get; set; }
     [Parameter] public string? ParentMenuURL { get; set; }
     #endregion
 
@@ -34,11 +35,12 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
     #region LoadData
     protected async Task<List<JsonObject>?> LoadData(DataGridLoadArgs args)
     {
-      BodyResponse<List<JsonObject>>? res = await IFINICSClient.GetRows<JsonObject>("AgreementMarketing", "GetRows", new
+      var res = await IFINICSClient.GetRows<JsonObject>("AgreementRefund", "GetRowsByAgreementID", new
       {
         args.Keyword,
         args.Offset,
-        args.Limit
+        args.Limit,
+        AgreementID = AgreementID
       });
       return res?.Data;
     }

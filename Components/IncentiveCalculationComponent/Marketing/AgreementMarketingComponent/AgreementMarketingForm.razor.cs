@@ -45,7 +45,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
     public async Task GetRow()
     {
       Loading.Show();
-      var res = await IFINICSClient.GetRow<JsonObject>("AgreementMarketing", "GetRowByID", new
+      var res = await IFINICSClient.GetRow<JsonObject>("AgreementIncentiveMarketing", "GetRowByID", new
       {
         ID = ID
       });

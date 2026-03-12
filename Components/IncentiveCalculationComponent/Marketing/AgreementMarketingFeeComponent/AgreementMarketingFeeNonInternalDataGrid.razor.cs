@@ -7,7 +7,7 @@ using SixLabors.ImageSharp.Memory;
 
 namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketing.AgreementMarketingFeeComponent
 {
-  public partial class AgreementMarketingFeeDataGrid
+  public partial class AgreementMarketingFeeNonInternalDataGrid
   {
     #region Service
     [Inject] IFINICSClient IFINICSClient { get; set; } = default!;
@@ -42,7 +42,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
         args.Offset,
         args.Limit,
         AgreementID = AgreementID,
-        IsInternalIncome = 1
+        IsInternalIncome = -1
       });
       return res?.Data;
     }

@@ -28,7 +28,7 @@
         <!-- #endregion -->
 
          <!-- #region Amount -->
-        <FormFieldNumeric Label="Amount" Name="TotalIncentiveAmount" Value="@(row["TotalIncentiveAmount"]?.GetValue<decimal>())" Required Max="250" Disabled
+        <FormFieldNumeric Label="Amount" Name="TotalIncentiveAmount" Value="@(row["TotalIncentiveAmount"]?.GetValue<decimal>())" Required Max="250" Format="N2" Disabled
            />
         <!-- #endregion -->
       </RadzenRow>

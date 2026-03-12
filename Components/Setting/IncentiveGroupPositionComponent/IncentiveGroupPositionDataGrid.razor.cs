@@ -106,12 +106,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveGroupPositionComponen
       {
         Loading.Show();
 
-        List<JsonObject> id = dataGrid.selectedData.Select(row => SetAuditInfo(new JsonObject
-        {
-          ["IncentiveGroupID"] = IncentiveGroupID,
-          ["PositionID"] = row["PositionID"]?.GetValue<string>(),
-          ["ID"] = row["ID"]?.GetValue<string>(),
-        })).ToList();
+        List<string?> id = dataGrid.selectedData.Select(row => row["ID"]?.GetValue<string>()).ToList();
 
         await IFINICSClient.Delete("IncentiveGroupPosition", "DeleteByID", id);
 
@@ -158,8 +153,6 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveGroupPositionComponen
           }
         }
       }
-
-      Console.WriteLine($"list to update: {System.Text.Json.JsonSerializer.Serialize(list)}");
       
       if (list.Count > 0) await IFINICSClient.Put("IncentiveGroupPosition", "UpdateByID", list);
 
