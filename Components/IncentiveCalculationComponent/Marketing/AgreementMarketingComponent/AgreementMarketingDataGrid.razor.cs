@@ -96,7 +96,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
                     ["MimeType"] = MimeType
                 };
 
-                var result2 = await IFINICSClient.Post("AgreementMarketing", "PrintDocument", payload);
+                var result2 = await IFINICSClient.Post("AgreementIncentiveMarketing", "PrintDocument", payload);
                 if (result2?.Data != null)
                 {
                     var data = result2.Data;

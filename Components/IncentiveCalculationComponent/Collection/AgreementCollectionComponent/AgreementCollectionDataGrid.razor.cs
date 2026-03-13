@@ -36,8 +36,9 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
     #region LoadData
     protected async Task<List<JsonObject>?> LoadData(DataGridLoadArgs args)
     {
-      BodyResponse<List<JsonObject>>? res = await IFINICSClient.GetRows<JsonObject>("AgreementCollection", "GetRows", new
+      BodyResponse<List<JsonObject>>? res = await IFINICSClient.GetRows<JsonObject>("AgreementCollection", "GetRowsByIncentiveID", new
       {
+        IncentiveID = ID,
         args.Keyword,
         args.Offset,
         args.Limit
