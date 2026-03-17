@@ -112,14 +112,12 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
         {
           Loading.Show();
 
-        
+          var ids = new List<string> { row["ID"]?.GetValue<string>() };
           
-          var result2 = await IFINICSClient.GetRow(
+          var result2 = await IFINICSClient.Post(
               "IncentiveCollection",
               "GetHTMLPreview", 
-              new { 
-                ID = row["ID"]?.GetValue<string>(),
-                }
+              ids
           );
           
           string html = result2?.Data["HTML"]?.GetValue<string>() ?? "<p>Default screen</p>";
@@ -141,13 +139,14 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
         {
             Loading.Show();
             
+            var ids = new List<string> { row["ID"]?.GetValue<string>() };
         
-            var result2 = await IFINICSClient.GetRow(
+            var result2 = await IFINICSClient.Post(
                 "IncentiveCollection",
                 "PrintDocument",
+                ids,
                 new
                 {
-                    ID = row["ID"]?.GetValue<string>(),
                     mimeType = mimeType,
                 });
 

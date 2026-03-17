@@ -25,7 +25,7 @@
       <DataGridColumn TItem="JsonObject" Property="UnpaidDate" Title="Unpaid Date" Width="35%" />
       <!-- #endregion  -->
 
-       <!-- #region Starting Date Handling -->
+       @* <!-- #region Starting Date Handling -->
       <DataGridColumn TItem="JsonObject" Property="StartingDateHandling" Title="Starting Date Handling" Width="35%" />
       <!-- #endregion  -->
 
@@ -35,7 +35,7 @@
 
        <!-- #region Result -->
       <DataGridColumn TItem="JsonObject" Property="IncentiveResult" Title="Incentive Result" Width="35%" />
-      <!-- #endregion  -->
+      <!-- #endregion  --> *@
 
        <!-- #region Collected Amount -->
       <DataGridColumn TItem="JsonObject" Property="CollectedAmount" Title="Collected Amount" Width="35%" Format="N2">
@@ -53,7 +53,7 @@
           <Template Context="row" >
               @if (row["CollectedPct"] != null)
               {
-                  <span>@($"{row["CollectedPct"].GetValue<decimal>() * 100:N0}%")</span>
+                  <span>@($"{row["CollectedPct"].GetValue<decimal>()}%")</span>
               }
           </Template>
       </DataGridColumn>
@@ -64,7 +64,7 @@
           <Template Context="row" >
               @if (row["IncentivePct"] != null)
               {
-                  <span>@($"{row["IncentivePct"].GetValue<decimal>() * 100:N0}%")</span>
+                  <span>@($"{row["IncentivePct"].GetValue<decimal>()}%")</span>
               }
           </Template>
       </DataGridColumn>

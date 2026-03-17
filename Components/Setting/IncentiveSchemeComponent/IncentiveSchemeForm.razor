@@ -67,12 +67,12 @@
         {
           <!-- #region Ratio -->
           <FormFieldNumeric Name="IncentiveRatio" Label="Ratio" Value="@(row["IncentiveRatio"]?.GetValue<decimal>())"
-            Required />
+            Required Format="N6"/>
           <!-- #endregion -->
 
           <!-- #region Rate Penalty -->
           <FormFieldNumeric Label="RatePenalty" Name="RatePenalty" Value="@(row["RatePenalty"]?.GetValue<decimal>())" Required
-            />
+            Format="N6"/>
           <!-- #endregion -->
         }
         else
@@ -89,12 +89,12 @@
 
           <!-- #region Minimum Amount -->
           <FormFieldNumeric Name="MinimumAmount" Label="Minimum Amount" Value="@(row["MinimumAmount"]?.GetValue<decimal>())"
-            Required />
+            Required Format="N2"/>
           <!-- #endregion -->
 
           <!-- #region Maximum Amount -->
           <FormFieldNumeric Name="MaximumAmount" Label="Maximum Amount" Value="@(row["MaximumAmount"]?.GetValue<decimal>())"
-            Required />
+            Required Format="N2"/>
           <!-- #endregion -->
         }
 

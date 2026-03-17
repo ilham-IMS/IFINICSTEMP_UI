@@ -73,14 +73,12 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
         if (result == true)
         {
             Loading.Show();
-
-            var id = ids.FirstOrDefault();
             
-            var result2 = await IFINICSClient.GetRow(
+            var result2 = await IFINICSClient.Post(
                 "IncentiveMarketing",
                 "GetHTMLPreview", 
+                ids,
                 new { 
-                  ID = id, 
                   PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(), 
                   PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
                   }
@@ -113,30 +111,28 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
         if (result == true)
         {
             Loading.Show();
-            
-            foreach (var id in ids)
-            {
-                var result2 = await IFINICSClient.GetRow(
-                    "IncentiveMarketing",
-                    "PrintDocument",
-                    new
-                    {
-                        ID = id,
-                        mimeType = mimeType,
-                        PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
-                        PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
-                    });
 
-                if (result2?.Data != null)
+            var result2 = await IFINICSClient.Post(
+                "IncentiveMarketing",
+                "PrintDocument",
+                ids,
+                new
                 {
-                    var data = result2.Data;
-                    var Content = data["Content"]?.GetValueAsByteArray();
-                    var FileName = data["Name"]?.GetValue<string>();
-                    var MimeType = data["MimeType"]?.GetValue<string>();
+                    mimeType = mimeType,
+                    PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
+                    PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
+                });
 
-                    PreviewFile(Content, FileName, MimeType);
-                }
+            if (result2?.Data != null)
+            {
+                var data = result2.Data;
+                var Content = data["Content"]?.GetValueAsByteArray();
+                var FileName = data["Name"]?.GetValue<string>();
+                var MimeType = data["MimeType"]?.GetValue<string>();
+
+                PreviewFile(Content, FileName, MimeType);
             }
+            
             
             Loading.Close();
         }

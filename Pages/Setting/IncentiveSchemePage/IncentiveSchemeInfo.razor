@@ -11,13 +11,21 @@
 <RoleAccess Code="RA0002367">
   <PageContainer>
     <PageLock When="@(ID != null)">
-      <IncentiveSchemeForm ID=@ID ParentMenuURL=@ParentMenuURL />
+      <IncentiveSchemeForm ID=@ID ParentMenuURL=@ParentMenuURL RowChanged=@(async arg => {
+          IncentiveScheme = arg;
+          if (incentiveSchemeDetailDataGrid?.dataGrid != null)
+          {
+            await incentiveSchemeDetailDataGrid.dataGrid.Reload();
+          }
+        })
+        @ref="incentiveSchemeForm"
+        />
 
-      @if (ID != null)
+      @if (ID != null && IncentiveScheme["IncentiveType"]?.GetValue<string>() == "COLLECTION")
       {
         <Divider />
         <SectionTitle Text="Scheme Detail List" />
-        <IncentiveSchemeDetailDataGrid SchemeID="@ID" ParentMenuURL="@ParentMenuURL"/>
+        <IncentiveSchemeDetailDataGrid SchemeID="@ID" ParentMenuURL="@ParentMenuURL" @ref="incentiveSchemeDetailDataGrid" ReloadParent="@(() => incentiveSchemeForm?.GetRow())"/>
       }
 
     </PageLock>
@@ -27,4 +35,7 @@
 @code {
   [Parameter] public string? ID { get; set; }
   [Parameter] public string? ParentMenuURL { get; set; }
+  public JsonObject? IncentiveScheme { get; set; } = [];
+  IncentiveSchemeDetailDataGrid incentiveSchemeDetailDataGrid;
+  IncentiveSchemeForm? incentiveSchemeForm;
 }

@@ -74,13 +74,12 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
         {
             Loading.Show();
 
-            var id = ids.FirstOrDefault();
             
-            var result2 = await IFINICSClient.GetRow(
+            var result2 = await IFINICSClient.Post(
                 "IncentiveCollection",
                 "GetHTMLPreview", 
-                new { 
-                  ID = id, 
+                ids,
+                new {  
                   PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(), 
                   PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
                   }
@@ -114,14 +113,12 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
         {
             Loading.Show();
             
-            foreach (var id in ids)
-            {
-                var result2 = await IFINICSClient.GetRow(
+                var result2 = await IFINICSClient.Post(
                     "IncentiveCollection",
                     "PrintDocument",
+                    ids,
                     new
                     {
-                        ID = id,
                         mimeType = mimeType,
                         PeriodeFrom = filter["PeriodeFrom"]?.GetValue<string>(),
                         PeriodeTo = filter["PeriodeTo"]?.GetValue<string>()
@@ -136,7 +133,7 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Collecti
 
                     PreviewFile(Content, FileName, MimeType);
                 }
-            }
+            
             
             Loading.Close();
         }

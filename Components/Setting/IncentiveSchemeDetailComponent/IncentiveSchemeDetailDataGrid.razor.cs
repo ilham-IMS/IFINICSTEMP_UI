@@ -12,7 +12,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeDetailComponent
     #endregion
 
     #region Component Field
-    DataGrid<JsonObject> dataGrid = null!;
+    public DataGrid<JsonObject> dataGrid = null!;
     #endregion
 
     #region Field
@@ -21,6 +21,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeDetailComponent
     #region Parameter
     [Parameter] public string? ParentMenuURL { get; set; }
     [Parameter] public string? SchemeID { get; set; }
+    [Parameter, EditorRequired] public EventCallback ReloadParent { get; set; }
 
     #endregion
 
@@ -58,7 +59,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeDetailComponent
 
         if (res?.Data != null)
         {
-          
+          await ReloadParent.InvokeAsync();
           await dataGrid.Reload();
         }
       }
@@ -98,6 +99,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeDetailComponent
 
         await IFINICSClient.Put("IncentiveSchemeDetail", "UpdateByID", list);
 
+        await ReloadParent.InvokeAsync();
         await dataGrid.Reload();
 
         Loading.Close();
@@ -130,6 +132,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeDetailComponent
         });
 
         await dataGrid.Reload();
+        await ReloadParent.InvokeAsync();
         dataGrid.selectedData.Clear();
 
         Loading.Close();

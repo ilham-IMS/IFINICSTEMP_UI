@@ -13,6 +13,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeComponent
     #region Parameter
     [Parameter, EditorRequired] public string? ID { get; set; }
     [Parameter] public string? ParentMenuURL { get; set; }
+    [Parameter, EditorRequired] public EventCallback<JsonObject> RowChanged { get; set; }
     #endregion
 
     #region Component Field
@@ -34,14 +35,14 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeComponent
     {
       masterForm = await LoadMasterForm("IS");
       controls = await LoadFormControls(masterForm["ID"]?.GetValue<string>());
-      if (ID != null)
+      if (ID != null && row["ID"] == null)
       {
         await GetRow();
         var extRes = await IFINICSClient.GetRows<ExtendModel>("IncentiveScheme", "GetRowByExt", new { ID });
         extend = extRes?.Data;
         AddExtendProperty(controls, extend, row);
       }
-      else
+      else if (ID == null)
       {
         row["IsActive"] = 1;
       }
@@ -62,6 +63,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeComponent
       if (res?.Data != null)
       {
         row = res.Data;
+        await RowChanged.InvokeAsync(row);
       }
 
       Loading.Close();
@@ -94,6 +96,7 @@ namespace IFinancing360_ICS_UI.Components.Setting.IncentiveSchemeComponent
       #region Update
       else
       {
+        Console.WriteLine($"Data to update: {data}");
         var res = await IFINICSClient.Put("IncentiveScheme", "UpdateByID", data);
         if (res?.Data != null)
         {

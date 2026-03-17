@@ -65,7 +65,7 @@
       <!-- #region BPE Ratio -->
       <DataGridColumn TItem="JsonObject" Property="BPERatio" Title="BPE Ratio" Width="35%" >
         <Template Context="row">
-          @(Math.Round(row["BPERatio"]?.GetValue<decimal>() * 100 ?? 0, 1) + " %")
+          @(Math.Round(row["BPERatio"]?.GetValue<decimal>() ?? 0, 6) + " %")
         </Template>
       </DataGridColumn>
       <!-- #endregion  -->
@@ -73,7 +73,7 @@
       <!-- #region Insurance Premium Usage Ratio -->
       <DataGridColumn TItem="JsonObject" Property="InsurancePremiumUsageRatio" Title="Insurance Premium Usage Ratio" Width="35%" >
         <Template Context="row">
-          @(Math.Round(row["InsurancePremiumUsageRatio"]?.GetValue<decimal>() ?? 0, 2) + " %")
+          @(Math.Round(row["InsurancePremiumUsageRatio"]?.GetValue<decimal>() ?? 0, 6) + " %")
         </Template>
       </DataGridColumn>
       <!-- #endregion  -->
@@ -81,7 +81,7 @@
       <!-- #region BPE Effect -->
       <DataGridColumn TItem="JsonObject" Property="BPEEffect" Title="BPE Effect" Width="35%" >
         <Template Context="row">
-          @(Math.Round(row["BPEEffect"]?.GetValue<decimal>() * 100 ?? 0, 2) + " %")
+          @(Math.Round(row["BPEEffect"]?.GetValue<decimal>() ?? 0, 6) + " %")
         </Template>
       </DataGridColumn>
       <!-- #endregion  -->

@@ -45,62 +45,73 @@ namespace IFinancing360_ICS_UI.Components.IncentiveCalculationComponent.Marketin
     #region GetRow
     public async Task GetRow()
     {
-      Loading.Show();
-      var res = await IFINICSClient.GetRow<JsonObject>("AgreementIncentiveMarketing", "GetRowByID", new
-      {
-        ID = ID
-      });
+        Loading.Show();
+        var res = await IFINICSClient.GetRow<JsonObject>("AgreementIncentiveMarketing", "GetRowByID", new { ID = ID });
 
-      if (res?.Data != null)
-      {
-        row = res.Data;
-      }
+        if (res?.Data != null)
+        {
+            row = res.Data;
+        }
 
-      var resApp = await IFINLOSClient.GetRow<JsonObject>("ApplicationFee", "GetRowByApplicationMainIDFeeCode", new
-      {
-        ApplicationMainID = row["ApplicationMainID"]?.GetValue<string>(),
-        FeeCode = "PROV"
-      });
-      row["BPETotalAmount"] = row["TotalRefundAmount"]?.GetValue<decimal>() + resApp?.Data?["FeeAmount"]?.GetValue<decimal>();
-      row["BPETotal"] = (row["TotalRefundAmount"]?.GetValue<decimal>() + resApp?.Data?["FeeAmount"]?.GetValue<decimal>()) / row["NetFinance"]?.GetValue<decimal>(); 
-      row["BPERatio"] = (row["BPETotalAmount"]?.GetValue<decimal>() - resApp?.Data?["FeeAmount"]?.GetValue<decimal>()) / row["TotalInsurancePremiAmount"]?.GetValue<decimal>();
-      row["BPEIncomeIncentiveExpense"] = ((row["CommissionRate"]?.GetValue<decimal>() * row["TotalInsurancePremiAmount"]?.GetValue<decimal>()) + resApp?.Data?["FeeAmount"]?.GetValue<decimal>()) - row["BPETotalAmount"]?.GetValue<decimal>();
-      row["BPEEffect"] = row["BPEIncomeIncentiveExpense"]?.GetValue<decimal>() / (row["InterestMargin"]?.GetValue<decimal>() * row["InterestMarginAmount"]?.GetValue<decimal>());
+        var resApp = await IFINLOSClient.GetRow<JsonObject>("ApplicationFee", "GetRowByApplicationMainIDFeeCode", new
+        {
+            ApplicationMainID = row["ApplicationMainID"]?.GetValue<string>(),
+            FeeCode = "PROV"
+        });
 
-      var resFeesNon = await IFINICSClient.GetRows<JsonObject>("AgreementFee", "GetRowsByAgreementID", new
-      {
-        Keyword = "", 
-        Offset = 0, 
-        Limit = int.MaxValue,
-        AgreementID = row["ID"]?.GetValue<string>(),
-        IsInternalIncome = -1
-      });
+        row["BPETotalAmount"] = row["TotalRefundAmount"]?.GetValue<decimal>() + resApp?.Data?["FeeAmount"]?.GetValue<decimal>();
+        
+        // Check NetFinance sebelum divide
+        var netFinance = row["NetFinance"]?.GetValue<decimal>() ?? 0;
+        row["BPETotal"] = netFinance != 0 ? ((row["TotalRefundAmount"]?.GetValue<decimal>() + resApp?.Data?["FeeAmount"]?.GetValue<decimal>()) ?? 0) / netFinance : 0;
+        
+        // Check TotalInsurancePremiAmount sebelum divide
+        var totalInsurancePrem = row["TotalInsurancePremiAmount"]?.GetValue<decimal>() ?? 0;
+        row["BPERatio"] = totalInsurancePrem != 0 ? (((row["BPETotalAmount"]?.GetValue<decimal>() ?? 0) - (resApp?.Data?["FeeAmount"]?.GetValue<decimal>() ?? 0)) / totalInsurancePrem) : 0;
+        
+        row["BPEIncomeIncentiveExpense"] = ((row["CommissionRate"]?.GetValue<decimal>() * row["TotalInsurancePremiAmount"]?.GetValue<decimal>()) + resApp?.Data?["FeeAmount"]?.GetValue<decimal>()) - row["BPETotalAmount"]?.GetValue<decimal>();
+        
+        // Check InterestMargin * InterestMarginAmount sebelum divide
+        var interestMarginCalc = (row["InterestMargin"]?.GetValue<decimal>() ?? 0) * (row["InterestMarginAmount"]?.GetValue<decimal>() ?? 0);
+        row["BPEEffect"] = interestMarginCalc != 0 ? ((row["BPEIncomeIncentiveExpense"]?.GetValue<decimal>() ?? 0) / interestMarginCalc) : 0;
 
-      row["NonInterestExpense"] = resFeesNon?.Data?.Where(fee => fee["FeeAmount"] != null).Sum(fee => fee["FeeAmount"]?.GetValue<decimal>() ?? 0);
+        var resFeesNon = await IFINICSClient.GetRows<JsonObject>("AgreementFee", "GetRowsByAgreementID", new
+        {
+            Keyword = "", 
+            Offset = 0, 
+            Limit = int.MaxValue,
+            AgreementID = row["ID"]?.GetValue<string>(),
+            IsInternalIncome = -1
+        });
 
-      var resFeesInt = await IFINICSClient.GetRows<JsonObject>("AgreementFee", "GetRowsByAgreementID", new
-      {
-        Keyword = "", 
-        Offset = 0, 
-        Limit = int.MaxValue,
-        AgreementID = row["ID"]?.GetValue<string>(),
-        IsInternalIncome = 1
-      });
+        row["NonInterestExpense"] = resFeesNon?.Data?.Where(fee => fee["FeeAmount"] != null).Sum(fee => fee["FeeAmount"]?.GetValue<decimal>() ?? 0);
 
-      row["NonInterestIncome"] = resFeesInt?.Data?.Where(fee => fee["FeeAmount"] != null).Sum(fee => fee["FeeAmount"]?.GetValue<decimal>() ?? 0);
+        var resFeesInt = await IFINICSClient.GetRows<JsonObject>("AgreementFee", "GetRowsByAgreementID", new
+        {
+            Keyword = "", 
+            Offset = 0, 
+            Limit = int.MaxValue,
+            AgreementID = row["ID"]?.GetValue<string>(),
+            IsInternalIncome = 1
+        });
 
-      row["NonInterestEffectAmount"] = row["NonInterestIncome"]?.GetValue<decimal>() - row["NonInterestExpense"]?.GetValue<decimal>();
-      row["NonInterestEffect"] = row["NonInterestEffectAmount"]?.GetValue<decimal>() / (row["InterestMargin"]?.GetValue<decimal>() * row["InterestMarginAmount"]?.GetValue<decimal>());
+        row["NonInterestIncome"] = resFeesInt?.Data?.Where(fee => fee["FeeAmount"] != null).Sum(fee => fee["FeeAmount"]?.GetValue<decimal>() ?? 0);
 
-      var totalInterestMargin = row["InterestMargin"]?.GetValue<decimal>() + row["BPEEffect"]?.GetValue<decimal>() + row["NonInterestEffect"]?.GetValue<decimal>();
+        row["NonInterestEffectAmount"] = (row["NonInterestIncome"]?.GetValue<decimal>() ?? 0) - (row["NonInterestExpense"]?.GetValue<decimal>() ?? 0);
+        
+        // Check InterestMargin * InterestMarginAmount sebelum divide
+        row["NonInterestEffect"] = interestMarginCalc != 0 ? ((row["NonInterestEffectAmount"]?.GetValue<decimal>() ?? 0) / interestMarginCalc) : 0;
 
-      var profitBeforeMarketingIncentive = row["InterestMarginAmount"]?.GetValue<decimal>() + row["BPEIncomeIncentiveExpense"]?.GetValue<decimal>() + row["NonInterestEffectAmount"]?.GetValue<decimal>();
+        var totalInterestMargin = (row["InterestMargin"]?.GetValue<decimal>() ?? 0) + (row["BPEEffect"]?.GetValue<decimal>() ?? 0) + (row["NonInterestEffect"]?.GetValue<decimal>() ?? 0);
 
-      row["MarketingIncentiveRatio"] = profitBeforeMarketingIncentive * 0.0384m;
+        var profitBeforeMarketingIncentive = (row["InterestMarginAmount"]?.GetValue<decimal>() ?? 0) + (row["BPEIncomeIncentiveExpense"]?.GetValue<decimal>() ?? 0) + (row["NonInterestEffectAmount"]?.GetValue<decimal>() ?? 0);
 
-      row["NetInterestMarginAfterCost"] = profitBeforeMarketingIncentive - row["MarketingIncentiveRatio"]?.GetValue<decimal>();
-      Loading.Close();
-      StateHasChanged();
+        row["MarketingIncentiveRatio"] = profitBeforeMarketingIncentive * 0.0384m;
+
+        row["NetInterestMarginAfterCost"] = profitBeforeMarketingIncentive - (row["MarketingIncentiveRatio"]?.GetValue<decimal>() ?? 0);
+        
+        Loading.Close();
+        StateHasChanged();
     }
     #endregion
   }
